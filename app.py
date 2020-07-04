@@ -96,9 +96,9 @@ currentTimeStamp = datetime.datetime.now()
 currentTimeStampHour = currentTimeStamp.hour
 
 # Dev
-# startTimeStampHour  = 0
-# currentTimeStampHour = 8
-# startTimeStampDay = 13
+startTimeStampHour  =16
+currentTimeStampHour = 24
+startTimeStampDay = 4
 
 limit = random.randrange(600,650)
 
@@ -145,12 +145,12 @@ def Merge(dict1 ,dict2):
     return res
 
 
-if currentTimeStampHour < 8:
-    startTimeStampHour = 0
-    startTimeStampDay = currentTimeStamp.day  
-else:
-    startTimeStampHour = currentTimeStampHour - 8
-    startTimeStampDay = currentTimeStamp.day 
+# if currentTimeStampHour < 8:
+#     startTimeStampHour = 0
+#     startTimeStampDay = currentTimeStamp.day  
+# else:
+#     startTimeStampHour = currentTimeStampHour - 8
+#     startTimeStampDay = currentTimeStamp.day 
 
 
 ############### ROUTES ################
@@ -163,15 +163,15 @@ def test():
 def getTweets():
 
     # Dev   
-    # startTime = datetime.datetime(2020, 6, 13,5, 0 ,0)
-    # endTime = datetime.datetime(2020, 6, 13, 20, 0 ,0)
+    startTime = datetime.datetime(2020, 7, 4,0, 0 ,0)
+    endTime = datetime.datetime(2020, 7, 4, 20, 0 ,0)
 
     # Custom Modal to predict the sentiment of each text
     modal = joblib.load('model.pkl')
 
-    startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
-    endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
- 
+    # startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
+    # endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
+
    
     # Variables to store resultant data
     posts = {"date" : currentDate, "hashtags":{}, "results":{},"mentions":{}}
