@@ -1,0 +1,91 @@
+.card{
+    background-color: #fff;
+    border-radius: 5px;
+    padding:10px;
+}
+.card-title h5{
+    color:#34495e;
+    font-size: 15px;
+    letter-spacing: 1px;;
+}
+.score{
+    margin-top:30px;
+}
+.score h5{
+    color:#6b6c6c;
+    font-size:28px;
+}
+.score h6{
+    color:#6b6c6c;
+    font-size:20px;
+    margin-left:13px; 
+}
+.final-score{
+    font-size: 19px !important;
+    margin-left:12px !important;
+    margin-top:10px !important;
+    letter-spacing: 1px;
+}
+.positive{
+    color:#3498db
+}
+.negative{
+    color:#c0392b
+}
+.neutral{
+    color:#f1c40f
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+.small-text{
+    margin-top:-12px;
+    font-size:12px;
+}
+.radarChart canvas{
+    width:400px !important
+}
+
+.searchContainer{
+    padding:10px;
+}
+.searchButton{
+    border-top-right-radius: 5px !important;
+    border-bottom-right-radius: 5px !important;
+    border:0px !important;
+}
+.filter-label{
+    color:#34495e;
+    font-size: 12px;
+    font-weight: bold;
+}
+.title-text{
+    color:#34495e;
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom:10px;
+}
+.searchButton{
+    margin-top:19px;
+}
+.seperate-charts{
+    
+    background-color:#fff;
+    padding:10px;
+    border-radius: 10px;
+}
+.header-text{
+    color:#34495e;
+    font-size:18px;
+    margin-left:10px;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+.header{
+    color:#34495e;
+    font-size:18px;
+    margin-bottom:20px;
+    margin-top:20px;
+
+}

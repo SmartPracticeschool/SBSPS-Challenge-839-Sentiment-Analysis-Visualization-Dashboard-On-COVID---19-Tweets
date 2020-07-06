@@ -74,7 +74,7 @@ natural_language_understanding = NaturalLanguageUnderstandingV1(
 tone_analyzer.set_service_url(os.getenv("TONE_ANALYZER_URL"))
 natural_language_understanding.set_service_url(os.getenv("NLU_URL"))
 
-app=Flask(__name__)
+app=Flask(__name__,  static_folder='client/build')
 
 # MongoDB Connection 
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
@@ -96,9 +96,9 @@ currentTimeStamp = datetime.datetime.now()
 currentTimeStampHour = currentTimeStamp.hour
 
 # Dev
-startTimeStampHour  = 16
-currentTimeStampHour = 24
-startTimeStampDay = 5
+# startTimeStampHour  = 16
+# currentTimeStampHour = 24
+# startTimeStampDay = 5
 
 limit = random.randrange(600,650)
 
@@ -145,12 +145,12 @@ def Merge(dict1 ,dict2):
     return res
 
 
-# if currentTimeStampHour < 8:
-#     startTimeStampHour = 0
-#     startTimeStampDay = currentTimeStamp.day  
-# else:
-#     startTimeStampHour = currentTimeStampHour - 8
-#     startTimeStampDay = currentTimeStamp.day 
+if currentTimeStampHour < 8:
+    startTimeStampHour = 0
+    startTimeStampDay = currentTimeStamp.day  
+else:
+    startTimeStampHour = currentTimeStampHour - 8
+    startTimeStampDay = currentTimeStamp.day 
 
 
 ############### ROUTES ################
@@ -162,15 +162,15 @@ def test():
 @app.route('/api/getTweets',methods=['GET',"POST"])
 def getTweets():
 
-    # Dev   
-    startTime = datetime.datetime(2020, 7, 5,0, 0 ,0)
-    endTime = datetime.datetime(2020, 7, 5, 20, 0 ,0)
+    # # Dev   
+    # startTime = datetime.datetime(2020, 7, 5,0, 0 ,0)
+    # endTime = datetime.datetime(2020, 7, 5, 20, 0 ,0)
 
     # Custom Modal to predict the sentiment of each text
     modal = joblib.load('model.pkl')
 
-    # startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
-    # endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
+    startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
+    endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
 
    
     # Variables to store resultant data
@@ -432,6 +432,14 @@ def getCoordinates():
     
     return result
 
+# Serve React App
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 
 if __name__ == '__main__':
