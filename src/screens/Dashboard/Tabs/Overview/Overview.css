@@ -1,0 +1,38 @@
+.initial-statistics-grid {
+    margin-left:30px;
+    margin-right:30px;
+}
+.grid-container{
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+.grid-item{
+    margin-right:10px;
+}
+.statistics-title{
+    color:#6F787F;
+    font-size: 28px;
+    font-family: openSansLight;
+}
+.small{
+    font-size: 13px;
+}
+.small-bold-text{
+    font-family: openSansSemiBold;
+    color:#3cbfa5
+}
+.small-bold-header{
+    font-family: openSansSemiBold;
+    color:#6F787F;
+    font-weight: bold;
+}
+.table-text{
+    font-size: 12px;
+    color:#212529;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+.title{
+    color:#6F787F;
+    font-family: openSans;
+}

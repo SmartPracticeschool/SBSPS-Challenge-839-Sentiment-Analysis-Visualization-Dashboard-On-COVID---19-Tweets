@@ -1,8 +1,26 @@
+@font-face {
+  font-family: openSansLight;
+  src: url('./assets/Open_Sans/OpenSans-Light.ttf');
+}
+
+@font-face {
+  font-family: openSans;
+  src: url('./assets/Open_Sans/OpenSans-Regular.ttf');
+}
+@font-face {
+  font-family: openSansSemiBold;
+  src: url('./assets/Open_Sans/OpenSans-SemiBold.ttf');
+}
+
 body{
   margin: 0;
   padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: openSans;
 }
 .icon{
   margin-right:10px;
+}
+.main-content{
+  margin:20px;
+  margin-left:30px;
 }
