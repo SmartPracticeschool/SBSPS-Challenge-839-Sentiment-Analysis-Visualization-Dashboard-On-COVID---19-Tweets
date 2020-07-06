@@ -96,9 +96,9 @@ currentTimeStamp = datetime.datetime.now()
 currentTimeStampHour = currentTimeStamp.hour
 
 # Dev
-startTimeStampHour  =16
+startTimeStampHour  = 16
 currentTimeStampHour = 24
-startTimeStampDay = 4
+startTimeStampDay = 5
 
 limit = random.randrange(600,650)
 
@@ -163,8 +163,8 @@ def test():
 def getTweets():
 
     # Dev   
-    startTime = datetime.datetime(2020, 7, 4,0, 0 ,0)
-    endTime = datetime.datetime(2020, 7, 4, 20, 0 ,0)
+    startTime = datetime.datetime(2020, 7, 5,0, 0 ,0)
+    endTime = datetime.datetime(2020, 7, 5, 20, 0 ,0)
 
     # Custom Modal to predict the sentiment of each text
     modal = joblib.load('model.pkl')
