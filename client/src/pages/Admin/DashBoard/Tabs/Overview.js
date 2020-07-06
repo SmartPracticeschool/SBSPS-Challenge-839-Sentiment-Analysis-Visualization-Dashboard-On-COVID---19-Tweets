@@ -18,7 +18,7 @@ import {
   faSadTear,
   faSmileBeam,
   faAngry,
-  faMeh,
+  faMeh
 } from "@fortawesome/free-solid-svg-icons";
 
 // Charts
@@ -36,25 +36,25 @@ class OverView extends React.Component {
     this.state = {
       isShowHashTagsModalOpen: false,
       isRadarModalOpen: false,
-      isMapModalOpen: false,
+      isMapModalOpen: false
     };
   }
 
   showMap = () => {
     this.setState({
-      isMapModalOpen: true,
+      isMapModalOpen: true
     });
   };
 
   showHashTagsModal = () => {
     this.setState({
-      isShowHashTagsModalOpen: true,
+      isShowHashTagsModalOpen: true
     });
   };
 
   showRadarModal = () => {
     this.setState({
-      isRadarModalOpen: true,
+      isRadarModalOpen: true
     });
   };
 
@@ -133,10 +133,10 @@ class OverView extends React.Component {
               (emotions.joy * 100).toFixed(0),
               (emotions.fear * 100).toFixed(0),
               (emotions.anger * 100).toFixed(0),
-              (emotions.disgust * 100).toFixed(0),
-            ],
-          },
-        ],
+              (emotions.disgust * 100).toFixed(0)
+            ]
+          }
+        ]
       };
 
       const randomColors = [
@@ -144,7 +144,7 @@ class OverView extends React.Component {
           backgroundColor: "rgba(44, 62, 80,0.2)",
           borderColor: "rgb(52, 73, 94)",
           pointBackgroundColor: "rgb(52, 73, 94)",
-          pointHoverBorderColor: "rgba(179,181,198,1)",
+          pointHoverBorderColor: "rgba(179,181,198,1)"
         },
         {
           backgroundColor: "rgba(255,99,132,0.2)",
@@ -152,7 +152,7 @@ class OverView extends React.Component {
           pointBackgroundColor: "rgba(255,99,132,1)",
           pointBorderColor: "#fff",
           pointHoverBackgroundColor: "#fff",
-          pointHoverBorderColor: "rgba(255,99,132,1)",
+          pointHoverBorderColor: "rgba(255,99,132,1)"
         },
         {
           backgroundColor: "rgba(41, 128, 185,0.2)",
@@ -160,8 +160,8 @@ class OverView extends React.Component {
           pointBackgroundColor: "rgb(52, 152, 219)",
           pointBorderColor: "#fff",
           pointHoverBackgroundColor: "#fff",
-          pointHoverBorderColor: "rgba(255,99,132,1)",
-        },
+          pointHoverBorderColor: "rgba(255,99,132,1)"
+        }
       ];
       var dataset = [];
       {
@@ -183,7 +183,7 @@ class OverView extends React.Component {
             (emotions.joy * 100).toFixed(0),
             (emotions.fear * 100).toFixed(0),
             (emotions.anger * 100).toFixed(0),
-            (emotions.disgust * 100).toFixed(0),
+            (emotions.disgust * 100).toFixed(0)
           ];
           dataset.push(result);
         });
@@ -192,7 +192,7 @@ class OverView extends React.Component {
       const radarChartData = {
         labels: ["Sadness", "Joy", "Fear", "Anger", "Disgust"],
 
-        datasets: dataset,
+        datasets: dataset
       };
 
       const date = Date().split(" ");
@@ -228,30 +228,30 @@ class OverView extends React.Component {
                           "#e74c3c",
                           "#f39c12",
                           "#f1c40f",
-                          "#3498db",
+                          "#3498db"
                         ]}
                         currentValueText=""
                         customSegmentLabels={[
                           {
                             position: "INSIDE",
-                            color: "#fff",
+                            color: "#fff"
                           },
                           {
                             position: "INSIDE",
-                            color: "#fff",
+                            color: "#fff"
                           },
                           {
                             position: "INSIDE",
-                            color: "#fff",
+                            color: "#fff"
                           },
                           {
                             position: "INSIDE",
-                            color: "#fff",
+                            color: "#fff"
                           },
                           {
                             position: "INSIDE",
-                            color: "#fff",
-                          },
+                            color: "#fff"
+                          }
                         ]}
                         ringWidth={20}
                         needleTransitionDuration={3333}
@@ -461,7 +461,7 @@ class OverView extends React.Component {
             isOpen={this.state.isShowHashTagsModalOpen}
             handleClose={() => {
               this.setState({
-                isShowHashTagsModalOpen: false,
+                isShowHashTagsModalOpen: false
               });
             }}
           />
@@ -472,7 +472,7 @@ class OverView extends React.Component {
             isOpen={this.state.isRadarModalOpen}
             handleClose={() => {
               this.setState({
-                isRadarModalOpen: false,
+                isRadarModalOpen: false
               });
             }}
           />
@@ -482,7 +482,7 @@ class OverView extends React.Component {
             isOpen={this.state.isMapModalOpen}
             handleClose={() => {
               this.setState({
-                isMapModalOpen: false,
+                isMapModalOpen: false
               });
             }}
           />

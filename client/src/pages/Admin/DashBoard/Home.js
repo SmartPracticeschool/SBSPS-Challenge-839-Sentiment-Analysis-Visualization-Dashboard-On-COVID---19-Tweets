@@ -16,7 +16,7 @@ import {
   faInfoCircle,
   faUserTie,
   faSearch,
-  faBalanceScale,
+  faBalanceScale
 } from "@fortawesome/free-solid-svg-icons";
 
 // Components
@@ -40,7 +40,7 @@ class Home extends React.Component {
   constructor() {
     super();
     this.state = {
-      markerData: [],
+      markerData: []
     };
   }
 
@@ -50,7 +50,7 @@ class Home extends React.Component {
     // var month = (today.getMonth() + 1).toString();
     // var day = today.getDate().toString();
     var month = "07";
-    var day = "5";
+    var day = "05";
     if (month.length == 1) {
       month = "0" + month;
     }
@@ -60,9 +60,9 @@ class Home extends React.Component {
     var date = today.getFullYear() + "-" + month + "-" + day;
     axios
       .post(`${Constants.FLASK_SERVER_ENDPOINT}/api/getTweetsByDate`, {
-        date: date,
+        date: date
       })
-      .then((res) => {
+      .then(res => {
         this.context.updateTodayTweets(res.data);
         this.getCoordinatesForLocations();
       });
@@ -70,16 +70,16 @@ class Home extends React.Component {
 
   getCoordinatesForLocations = () => {
     var tempData = this.context.todayTweets.locations;
-    Object.keys(tempData).map((val) => {
+    Object.keys(tempData).map(val => {
       axios
         .post(`${Constants.FLASK_SERVER_ENDPOINT}/api/getCoordinates`, {
-          name: val,
+          name: val
         })
-        .then((res) => {
+        .then(res => {
           if (res.data.Latitude !== undefined) {
             tempData[val]["position"] = res.data;
             this.setState({
-              markerData: tempData,
+              markerData: tempData
             });
             this.context.setMarkerData(tempData);
           }
