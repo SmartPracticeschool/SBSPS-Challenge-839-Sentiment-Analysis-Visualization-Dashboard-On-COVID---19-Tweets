@@ -1,54 +1,45 @@
+# IBM Watson
+from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions, EmotionOptions, KeywordsOptions
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_watson import ToneAnalyzerV3
+
+# Flask and PyMongo for mongo DB
+from flask_pymongo import PyMongo
+from flask import Flask, send_from_directory
+from flask import request
+from flask_cors import CORS
+from flask import jsonify
+from flask import Flask
+
+# Twitter API
+from tweepy import Cursor
+from tweepy import API
+from tweepy import OAuthHandler
+import tweepy
+# NLTK
+from nltk import FreqDist, classify, NaiveBayesClassifier
+from nltk.tokenize import word_tokenize
+from nltk.tag import pos_tag
+from nltk.corpus import twitter_samples, stopwords
+from nltk.stem.wordnet import WordNetLemmatizer
+import nltk
+import joblib
 import os
 import json
 import datetime
 import random
 import requests
-import re, string
+import re
+import string
 from bson import json_util
 from collections import Counter
 
 # BS4
 from urllib.request import Request, urlopen
-from bs4 import BeautifulSoup as soup
 
 from dotenv import load_dotenv
 load_dotenv()
-
-# NLTK
-import joblib
-import nltk
-from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.corpus import twitter_samples, stopwords
-from nltk.tag import pos_tag
-from nltk.tokenize import word_tokenize
-from nltk import FreqDist, classify, NaiveBayesClassifier
-
-
-# Tweepy
-import tweepy
-from tweepy import OAuthHandler
-from tweepy import API
-from tweepy import Cursor
-
-# Flask
-from flask import Flask
-from flask import jsonify
-from flask_cors import CORS
-from flask import request
-from flask import Flask, send_from_directory
-
-# PyMongo for DB
-from flask_pymongo import PyMongo
-
-# IBM Watson Tone Analyzer
-from ibm_watson import ToneAnalyzerV3
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-
-# IBM Watson NLU
-from ibm_watson import NaturalLanguageUnderstandingV1
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions, EmotionOptions, KeywordsOptions
-
 
 # Twitter Credentials
 consumer_key = os.getenv("TWITTER_CONSUMER_KEY")
@@ -76,21 +67,21 @@ natural_language_understanding.set_service_url(os.getenv("NLU_URL"))
 
 app=Flask(__name__,  static_folder='build/')
 
-# MongoDB Connection 
+# MongoDB Connection
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 mongo = PyMongo(app)
 
 # CORS
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-# OAuth 
-auth=OAuthHandler(consumer_key,consumer_secret)
-auth.set_access_token(access_token,access_token_secret)
-auth_api=API(auth)
+# OAuth
+auth = OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+auth_api = API(auth)
 
 
 # Global Variables
-currentDate = str(datetime.datetime.now()).split(" ")[0]  
+currentDate = str(datetime.datetime.now()).split(" ")[0]
 currentTime = str(datetime.datetime.now()).split(" ")[1]
 currentTimeStamp = datetime.datetime.now()
 currentTimeStampHour = currentTimeStamp.hour
@@ -106,14 +97,14 @@ startTimeStampDay = 6
 
 
 ################## HELPER FUNCTIONS FOR MODEL #####################
-def removeNoise(tweetTokens, stop_words = ()):
+def removeNoise(tweetTokens, stop_words=()):
 
     cleanedTokens = []
 
     for token, tag in pos_tag(tweetTokens):
-        token = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|'\
-                       '(?:%[0-9a-fA-F][0-9a-fA-F]))+','', token)
-        token = re.sub("(@[A-Za-z0-9_]+)","", token)
+        token = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|'
+                       '(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', token)
+        token = re.sub("(@[A-Za-z0-9_]+)", "", token)
 
         if tag.startswith("NN"):
             pos = 'n'
@@ -129,10 +120,12 @@ def removeNoise(tweetTokens, stop_words = ()):
             cleanedTokens.append(token.lower())
     return cleanedTokens
 
+
 def getAllWords(cleanedTokensList):
     for tokens in cleanedTokensList:
         for token in tokens:
             yield token
+
 
 def getTweetsForModel(cleanedTokensList):
     for tweetTokens in cleanedTokensList:
@@ -140,8 +133,8 @@ def getTweetsForModel(cleanedTokensList):
 
 
 # Function to merge two dictionaires
-def Merge(dict1 ,dict2):
-    res  = Counter(dict1) + Counter(dict2) 
+def Merge(dict1, dict2):
+    res = Counter(dict1) + Counter(dict2)
     return res
 
 
@@ -155,7 +148,7 @@ def Merge(dict1 ,dict2):
 
 ############### ROUTES ################
 # Collect tweets from a hashtag
-@app.route('/api/test',methods=['GET'])
+@app.route('/api/test', methods=['GET'])
 def test():
     return "Running"
 
@@ -187,10 +180,11 @@ def getTweets():
     # startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
     # endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
 
-   
     # Variables to store resultant data
-    posts = {"date" : currentDate, "hashtags":{}, "results":{},"mentions":{}}
-    posts["results"][str(startTimeStampHour) + "-" + str(currentTimeStampHour)] = []
+    posts = {"date": currentDate, "hashtags": {},
+             "results": {}, "mentions": {}}
+    posts["results"][str(startTimeStampHour) + "-" +
+                     str(currentTimeStampHour)] = []
     hashtagsCounter = {}
     mentionsCounter = {}
 
@@ -263,10 +257,11 @@ def getTweets():
         
 
     # Sort the dictionary by the value
-    sortedHashTagsCounter =  {k: v for k, v in reversed(sorted(hashtagsCounter.items(), key=lambda item: item[1]))}
-    sortedMentionsCounter =  {k: v for k, v in reversed(sorted(mentionsCounter.items(), key=lambda item: item[1]))}
+    sortedHashTagsCounter = {k: v for k, v in reversed(
+        sorted(hashtagsCounter.items(), key=lambda item: item[1]))}
+    sortedMentionsCounter = {k: v for k, v in reversed(
+        sorted(mentionsCounter.items(), key=lambda item: item[1]))}
 
-    
     # Add the top 5 hastags in the result
     count = 0
     for key in sortedHashTagsCounter:
@@ -274,7 +269,7 @@ def getTweets():
         count += 1
         if count == 5:
             break
-    
+
     # Add the top 20 user mentions in the result
     count = 0
     for key in sortedMentionsCounter:
@@ -284,22 +279,24 @@ def getTweets():
             break
 
     # Find the tones of the tweets
-    toneAnalysis = tone_analyzer.tone({'text': tweets},content_type='application/json').get_result()
+    toneAnalysis = tone_analyzer.tone(
+        {'text': tweets}, content_type='application/json').get_result()
     # Find the sentiment, emotions and keywords
-    sentimentAnalysis = natural_language_understanding.analyze(text = tweets,features=Features(sentiment=SentimentOptions(),emotion=EmotionOptions(),keywords=KeywordsOptions(sentiment=True,emotion=True,limit=2))).get_result()
-    
-   
-    posts["results"][str(startTimeStampHour)+"-"+str(currentTimeStampHour)][0] = sentimentAnalysis
-    posts["results"][str(startTimeStampHour)+"-"+str(currentTimeStampHour)][1] = toneAnalysis
-   
+    sentimentAnalysis = natural_language_understanding.analyze(text=tweets, features=Features(sentiment=SentimentOptions(
+    ), emotion=EmotionOptions(), keywords=KeywordsOptions(sentiment=True, emotion=True, limit=2))).get_result()
+
+    posts["results"][str(startTimeStampHour)+"-" +
+                     str(currentTimeStampHour)][0] = sentimentAnalysis
+    posts["results"][str(startTimeStampHour)+"-" +
+                     str(currentTimeStampHour)][1] = toneAnalysis
+
     # Write results to the file
     with open('result.json', 'w') as fp:
         json.dumps(posts, indent=4, default=json_util.default)
 
-
     # Store the results to the database
-    existingData = mongo.db.tweets.find_one({"date":currentDate})
-    
+    existingData = mongo.db.tweets.find_one({"date": currentDate})
+
     if existingData == None:
         mongo.db.tweets.insert(posts)
         # pass  
@@ -307,52 +304,58 @@ def getTweets():
     else:
         # Merge the two dictionaries
         newHashtags = Merge(existingData["hashtags"], posts["hashtags"])
-        newMentions = Merge(existingData["mentions"],posts["mentions"])
+        newMentions = Merge(existingData["mentions"], posts["mentions"])
 
         # Update Data in DB
-        mongo.db.tweets.update({"date":currentDate},{"$set":{"hashtags": newHashtags}})
-        mongo.db.tweets.update({"date":currentDate},{"$set":{"mentions": newMentions}})
-        mongo.db.tweets.update({"date":currentDate},{"$set":{"results." + (str(startTimeStampHour) + "-" + str(currentTimeStampHour)) : posts["results"][str(startTimeStampHour) + "-" + str(currentTimeStampHour)]}})
+        mongo.db.tweets.update({"date": currentDate}, {
+                               "$set": {"hashtags": newHashtags}})
+        mongo.db.tweets.update({"date": currentDate}, {
+                               "$set": {"mentions": newMentions}})
+        mongo.db.tweets.update({"date": currentDate}, {"$set": {"results." + (str(startTimeStampHour) + "-" + str(
+            currentTimeStampHour)): posts["results"][str(startTimeStampHour) + "-" + str(currentTimeStampHour)]}})
     posts = json.dumps(posts, indent=4, default=json_util.default)
-    
 
     return posts
 
 # Get tweets by date
-@app.route('/api/getTweetsByDate',methods=['GET',"POST"])
+
+
+@app.route('/api/getTweetsByDate', methods=['GET', "POST"])
 def getTweetsByDate():
     tweets = ""
     size = 0
     topInfluencersCounter = {}
     date = request.json["date"]
-    res = mongo.db.tweets.find_one({"date":date})
+    res = mongo.db.tweets.find_one({"date": date})
 
-
-    
     if res != None:
         # Calculate the number of tweets and likes for each person
         for result in res["results"]:
             size += len(res["results"][result])
-        
 
         for result in res["results"]:
-                for item in res["results"][result]:
-                    try:
-                        # Find the top influencers and their tweetscount and likes count
-                        if item["screenName"] in topInfluencersCounter:
-                            topInfluencersCounter[item["screenName"]]["favouriteCount"] += int(item["favouriteCount"])
-                            topInfluencersCounter[item["screenName"]]["tweetCount"] += 1   
-                        else:
-                            topInfluencersCounter[item["screenName"]] = {}
-                            topInfluencersCounter[item["screenName"]]["favouriteCount"] = int(item["favouriteCount"])
-                            topInfluencersCounter[item["screenName"]]["tweetCount"] = 1
-                    except:
-                        pass
-        
-        topInfluencersCounter =  {k: v for k, v in reversed(sorted(topInfluencersCounter.items(), key=lambda item: item[1]["tweetCount"]))}
+            for item in res["results"][result]:
+                try:
+                    # Find the top influencers and their tweetscount and likes count
+                    if item["screenName"] in topInfluencersCounter:
+                        topInfluencersCounter[item["screenName"]
+                                              ]["favouriteCount"] += int(item["favouriteCount"])
+                        topInfluencersCounter[item["screenName"]
+                                              ]["tweetCount"] += 1
+                    else:
+                        topInfluencersCounter[item["screenName"]] = {}
+                        topInfluencersCounter[item["screenName"]]["favouriteCount"] = int(
+                            item["favouriteCount"])
+                        topInfluencersCounter[item["screenName"]
+                                              ]["tweetCount"] = 1
+                except:
+                    pass
+
+        topInfluencersCounter = {k: v for k, v in reversed(
+            sorted(topInfluencersCounter.items(), key=lambda item: item[1]["tweetCount"]))}
 
         # Add the top 5 hastags in the result
-        res["topInfluencers"] = {}         
+        res["topInfluencers"] = {}
         count = 0
         for key in topInfluencersCounter:
             res["topInfluencers"][key] = topInfluencersCounter[key]
@@ -365,18 +368,21 @@ def getTweetsByDate():
         # Calculate average sentiment score
         totalScore = 0
         count = 0
-        
+
         for result in res["results"]:
-            count += 1 
+            count += 1
             totalScore += res["results"][result][0]["sentiment"]["document"]["score"]
 
-        overallSentimentScore = totalScore / count 
+        overallSentimentScore = totalScore / count
         overallSentimentLabel = ""
 
-        if overallSentimentScore < 0 : overallSentimentLabel = "Negative"
-        elif overallSentimentScore > 0 : overallSentimentLabel = "Positive"
-        else: overallSentimentLabel = "Neutral" 
-        
+        if overallSentimentScore < 0:
+            overallSentimentLabel = "Negative"
+        elif overallSentimentScore > 0:
+            overallSentimentLabel = "Positive"
+        else:
+            overallSentimentLabel = "Neutral"
+
         # Calculate average emotion scores
         counter = {}
         for result in res["results"]:
@@ -389,7 +395,6 @@ def getTweetsByDate():
 
         for emotion in counter:
             counter[emotion] = (counter[emotion]) / 2
-
 
         locationCounter = {}
 
@@ -404,7 +409,8 @@ def getTweetsByDate():
                         elif tweet["prediction"] == "Negative":
                             locationCounter[tweet["location"]]["negative"] += 1
                     else:
-                        locationCounter[tweet["location"]] = {"positive":0,"negative":0}
+                        locationCounter[tweet["location"]] = {
+                            "positive": 0, "negative": 0}
                         if tweet["prediction"] == "Positive":
                             locationCounter[tweet["location"]]["positive"] = 1
                         elif tweet["prediction"] == "Negative":
@@ -412,7 +418,6 @@ def getTweetsByDate():
                 except:
                     pass
 
-                
         res["overAllSentimentScore"] = overallSentimentScore
         res["overAllSentimentLabel"] = overallSentimentLabel
         res["overAllEmotions"] = counter
@@ -422,14 +427,16 @@ def getTweetsByDate():
         return {}
 
 # Get all tweets in the database
-@app.route('/api/getAllTweets',methods=['GET'])
+
+
+@app.route('/api/getAllTweets', methods=['GET'])
 def getAllTweets():
     results = mongo.db.tweets.find({})
     counter = {}
 
     for res in results:
         counter[res["date"]] = {}
-        count  = 0
+        count = 0
         # Calculate average emotion scores
         for key in res["results"]:
             count += 1
@@ -437,26 +444,28 @@ def getAllTweets():
                 if emotion in counter[res["date"]]:
                     counter[res["date"]][emotion] += res["results"][key][0]["emotion"]["document"]["emotion"][emotion]
                 else:
-                    counter[res["date"]][emotion] = res["results"][key][0]["emotion"]["document"]["emotion"][emotion] 
+                    counter[res["date"]][emotion] = res["results"][key][0]["emotion"]["document"]["emotion"][emotion]
 
         counter[res["date"]]["sadness"] = counter[res["date"]]["sadness"] / count
-        counter[res["date"]]["joy"] = counter[res["date"]]["joy"] / count     
-        counter[res["date"]]["anger"] = counter[res["date"]]["anger"] / count     
-        counter[res["date"]]["disgust"] = counter[res["date"]]["disgust"] / count     
-        counter[res["date"]]["fear"] = counter[res["date"]]["fear"] / count     
+        counter[res["date"]]["joy"] = counter[res["date"]]["joy"] / count
+        counter[res["date"]]["anger"] = counter[res["date"]]["anger"] / count
+        counter[res["date"]]["disgust"] = counter[res["date"]]["disgust"] / count
+        counter[res["date"]]["fear"] = counter[res["date"]]["fear"] / count
 
     return json.dumps(counter, indent=4, default=json_util.default)
 
-@app.route('/api/getCoordinates',methods=['GET',"POST"])
+
+@app.route('/api/getCoordinates', methods=['GET', "POST"])
 def getCoordinates():
     city = request.json["name"]
-    req = requests.get("https://geocoder.ls.hereapi.com/6.2/geocode.json?searchtext="+city+"&gen=9&apiKey=Omfb3D_6gnrF9h7r_TsQAyFJrj47fZcbqIeN41Uxxxw")
+    req = requests.get("https://geocoder.ls.hereapi.com/6.2/geocode.json?searchtext=" +
+                       city+"&gen=9&apiKey=Omfb3D_6gnrF9h7r_TsQAyFJrj47fZcbqIeN41Uxxxw")
     data = req.json()
     try:
         result = data["Response"]["View"][0]["Result"][0]["Location"]["DisplayPosition"]
     except:
         result = {}
-    
+
     return result
 
 
@@ -739,6 +748,8 @@ def getMonthData():
     
 ###################################################################
 # Serve React App
+
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
