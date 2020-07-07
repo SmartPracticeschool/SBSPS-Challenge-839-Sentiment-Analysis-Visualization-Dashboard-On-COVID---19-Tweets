@@ -74,7 +74,7 @@ natural_language_understanding = NaturalLanguageUnderstandingV1(
 tone_analyzer.set_service_url(os.getenv("TONE_ANALYZER_URL"))
 natural_language_understanding.set_service_url(os.getenv("NLU_URL"))
 
-app=Flask(__name__,  static_folder='client/build')
+app=Flask(__name__,  static_folder='build/')
 
 # MongoDB Connection 
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
@@ -96,11 +96,11 @@ currentTimeStamp = datetime.datetime.now()
 currentTimeStampHour = currentTimeStamp.hour
 
 # Dev
-# startTimeStampHour  = 16
-# currentTimeStampHour = 24
-# startTimeStampDay = 5
+startTimeStampHour  = 16
+currentTimeStampHour = 23
+startTimeStampDay = 6
 
-limit = random.randrange(600,650)
+# limit = random.randrange(600,650)
 
 
 
@@ -145,12 +145,12 @@ def Merge(dict1 ,dict2):
     return res
 
 
-if currentTimeStampHour < 8:
-    startTimeStampHour = 0
-    startTimeStampDay = currentTimeStamp.day  
-else:
-    startTimeStampHour = currentTimeStampHour - 8
-    startTimeStampDay = currentTimeStamp.day 
+# if currentTimeStampHour < 8:
+#     startTimeStampHour = 0
+#     startTimeStampDay = currentTimeStamp.day  
+# else:
+#     startTimeStampHour = currentTimeStampHour - 8
+#     startTimeStampDay = currentTimeStamp.day 
 
 
 ############### ROUTES ################
@@ -159,18 +159,33 @@ else:
 def test():
     return "Running"
 
+# route to store the hashtags to be searched
+@app.route('/api/updateHastags',methods=['POST'])
+def updateHastags():
+    result = {}
+    hashtags = request.json["hashtags"]
+    try:
+        mongo.db.hashtags.update_one({"uniqueID":"1"},{"$set":{"hashtags" : hashtags}})
+        result["message"] = "Updated Successfully"
+    except:
+        result["message"] = "Update Failed"
+    
+    return result
+
+
+# route to get tweets from twitter
 @app.route('/api/getTweets',methods=['GET',"POST"])
 def getTweets():
 
-    # # Dev   
-    # startTime = datetime.datetime(2020, 7, 5,0, 0 ,0)
-    # endTime = datetime.datetime(2020, 7, 5, 20, 0 ,0)
+    # Dev   
+    startTime = datetime.datetime(2020, 7, 6,0, 0 ,0)
+    endTime = datetime.datetime(2020, 7, 6, 23, 0 ,0)
 
     # Custom Modal to predict the sentiment of each text
     modal = joblib.load('model.pkl')
 
-    startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
-    endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
+    # startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
+    # endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
 
    
     # Variables to store resultant data
@@ -179,61 +194,71 @@ def getTweets():
     hashtagsCounter = {}
     mentionsCounter = {}
 
-    count = 0
+    # fetch hashtags from the db
+    fetchedHashtags = mongo.db.hashtags.find({"uniqueID":"1"})
+    fetchedHashtags = fetchedHashtags[0]["hashtags"]
+
+    # Loop through the list of hashtags
+    # Get the tweets for each hastag
+    for queryString in fetchedHashtags:
+        limit = 50
+        count = 0
+        queryString = "#" + queryString
+        for tweet in tweepy.Cursor(auth_api.search,q=queryString,count=200,
+                        lang="en",geocode="22.9734,78.6569,1000km").items():
+            print(queryString)
+            tweets = ""
+            # Collect the tweets for the past 6 hrs
+            if tweet.created_at < endTime and tweet.created_at > startTime:
+
+                # Predictions
+                customTokens = removeNoise(word_tokenize(tweet.text))
+                prediction = modal.classify(dict([token, True] for token in customTokens))
+
+                tweets += tweet.text + "\n"            
+                data = {
+                    "id" : tweet.id,
+                    "text" : tweet.text,
+                    "prediction" : prediction,
+                    "screenName" : tweet.user.screen_name,
+                    "followersCount":tweet.user.followers_count,
+                    "profilePicURL" : tweet.user.profile_image_url,
+                    "location" : tweet.user.location,
+                    "favouriteCount" : tweet.favorite_count,
+                    "retweetCount" : tweet.retweet_count,
+                    "userFriendsCount" : tweet.user.friends_count,
+                    "date" : str(tweet.created_at).split(" ")[0],
+                    "time" : str(tweet.created_at).split(" ")[1]
+                }
+                
+
+                # Exception handling because some of the posts doesn't have the "possibly_sensitive" attribute
+                try:
+                    data["isSensitive"] = tweet.possibly_sensitive
+                except:
+                    pass
+                
+                posts["results"][str(startTimeStampHour)+"-"+str(currentTimeStampHour)].append(data)
+
+                # Calculate the frequency of the hashtags 
+                for data in tweet.entities["hashtags"]:
+                    if data["text"].capitalize() in hashtagsCounter:
+                        hashtagsCounter[data["text"].capitalize()] += 1
+                    else:
+                        hashtagsCounter[data["text"].capitalize()] = 0
+
+                for data in tweet.entities["user_mentions"]:
+                    if data["screen_name"].capitalize() in mentionsCounter:
+                        mentionsCounter[data["screen_name"].capitalize()] += 1
+                    else:
+                        mentionsCounter[data["screen_name"].capitalize()] = 0
+                
+                count += 1
+                if(count == limit):
+                    break
+        
+
     
-    # Get the tweets from a particular hashtag
-    for tweet in tweepy.Cursor(auth_api.search,q="#lockdown",count=200,
-                            lang="en",geocode="22.9734,78.6569,1000km").items():
-        tweets = ""
-        # Collect the tweets for the past 6 hrs
-        if tweet.created_at < endTime and tweet.created_at > startTime:
-
-            # Predictions
-            customTokens = removeNoise(word_tokenize(tweet.text))
-            prediction = modal.classify(dict([token, True] for token in customTokens))
-
-            tweets += tweet.text + "\n"            
-            data = {
-                "id" : tweet.id,
-                "text" : tweet.text,
-                "prediction" : prediction,
-                "screenName" : tweet.user.screen_name,
-                "followersCount":tweet.user.followers_count,
-                "profilePicURL" : tweet.user.profile_image_url,
-                "location" : tweet.user.location,
-                "favouriteCount" : tweet.favorite_count,
-                "retweetCount" : tweet.retweet_count,
-                "userFriendsCount" : tweet.user.friends_count,
-                "date" : str(tweet.created_at).split(" ")[0],
-                "time" : str(tweet.created_at).split(" ")[1]
-            }
-            
-
-            # Exception handling because some of the posts doesn't have the "possibly_sensitive" attribute
-            try:
-                data["isSensitive"] = tweet.possibly_sensitive
-            except:
-                pass
-            
-            posts["results"][str(startTimeStampHour)+"-"+str(currentTimeStampHour)].append(data)
-
-            # Calculate the frequency of the hashtags 
-            for data in tweet.entities["hashtags"]:
-                if data["text"].capitalize() in hashtagsCounter:
-                    hashtagsCounter[data["text"].capitalize()] += 1
-                else:
-                    hashtagsCounter[data["text"].capitalize()] = 0
-
-            for data in tweet.entities["user_mentions"]:
-                if data["screen_name"].capitalize() in mentionsCounter:
-                    mentionsCounter[data["screen_name"].capitalize()] += 1
-                else:
-                    mentionsCounter[data["screen_name"].capitalize()] = 0
-            
-            count += 1
-            if(count == limit):
-                break
-            
 
         
 
@@ -277,6 +302,8 @@ def getTweets():
     
     if existingData == None:
         mongo.db.tweets.insert(posts)
+        # pass  
+        print("done")
     else:
         # Merge the two dictionaries
         newHashtags = Merge(existingData["hashtags"], posts["hashtags"])
@@ -432,6 +459,285 @@ def getCoordinates():
     
     return result
 
+
+@app.route('/api/getThisMonthTweets',methods=["GET","POST"])
+def getThisMonthTweets():
+    finalResult = {}
+    finalResult["weeklyData"] = {}
+    date = request.json["date"]
+    splittedDate = date.split('-')
+    month = "-" + splittedDate[1] + "-"
+    results = mongo.db.tweets.find({"date": {"$regex": month}})
+    counter = {}
+
+    for res in results:
+        counter[res["date"]] = {}
+        count  = 0
+        # Calculate average emotion scores
+        for key in res["results"]:
+            count += 1
+            for emotion in res["results"][key][0]["emotion"]["document"]["emotion"]:
+                if emotion in counter[res["date"]]:
+                    counter[res["date"]][emotion] += res["results"][key][0]["emotion"]["document"]["emotion"][emotion]
+                else:
+                    counter[res["date"]][emotion] = res["results"][key][0]["emotion"]["document"]["emotion"][emotion] 
+
+        counter[res["date"]]["sadness"] = counter[res["date"]]["sadness"] / count
+        counter[res["date"]]["joy"] = counter[res["date"]]["joy"] / count     
+        counter[res["date"]]["anger"] = counter[res["date"]]["anger"] / count     
+        counter[res["date"]]["disgust"] = counter[res["date"]]["disgust"] / count     
+        counter[res["date"]]["fear"] = counter[res["date"]]["fear"] / count     
+
+    #seperate data according to weeks
+    firstWeekCount = 0
+    secondWeekCount = 0
+    thirdWeekCount = 0
+    fourthWeekCount = 0
+
+    for obj in counter:
+        date = obj
+        formattedDateList = date.split('-')
+        formattedDate = formattedDateList[-1]
+        
+        if formattedDate >= "0" and formattedDate <= "7":
+            firstWeekCount += 1
+        elif formattedDate > "8" and formattedDate <= "14":
+            secondWeekCount += 1
+        elif formattedDate > "15" and formattedDate <= "21":
+            thirdWeekCount += 1
+        else:
+            fourthWeekCount += 1
+    
+    for obj in counter:
+        key = obj
+        finalResult["weeklyData"]["firstWeek"] = {}
+        finalResult["weeklyData"]["secondWeek"] = {}
+        finalResult["weeklyData"]["thirdWeek"] = {}
+        finalResult["weeklyData"]["fourthWeek"] = {}
+
+        date = obj.split('-')[-1]
+        if formattedDate >= "0" and formattedDate <= "7":
+            for emotion in counter[key]:
+                if emotion in finalResult["weeklyData"]["firstWeek"]:
+                    finalResult["weeklyData"]["firstWeek"][emotion] += counter[key][emotion]
+                else:
+                    finalResult["weeklyData"]["firstWeek"][emotion] = counter[key][emotion]
+
+        elif formattedDate > "8" and formattedDate <= "14":
+            for emotion in counter[key]:
+                if emotion in finalResult["weeklyData"]["secondWeek"]:
+                    finalResult["weeklyData"]["secondWeek"][emotion] += counter[key][emotion]
+                else:
+                    finalResult["weeklyData"]["secondWeek"][emotion] = counter[key][emotion]
+
+        elif formattedDate > "15" and formattedDate <= "21":
+            for emotion in counter[key]:
+                if emotion in finalResult["weeklyData"]["thirdWeek"]:
+                    finalResult["weeklyData"]["thirdWeek"][emotion] += counter[key][emotion]
+                else:
+                    finalResult["weeklyData"]["thirdWeek"][emotion] = counter[key][emotion]
+        else:
+            for emotion in counter[key]:
+                if emotion in finalResult["weeklyData"]["fourthWeek"]:
+                    finalResult["weeklyData"]["fourthWeek"][emotion] += counter[key][emotion]
+                else:
+                    finalResult["weeklyData"]["fourthWeek"][emotion] = counter[key][emotion]
+
+    # get average emotions of each week
+    if firstWeekCount > 0:
+        for key in finalResult["weeklyData"]["firstWeek"]:
+            finalResult["weeklyData"]["firstWeek"][key] = finalResult["weeklyData"]["firstWeek"][key] / firstWeekCount
+    else:
+        del finalResult["weeklyData"]["firstWeek"]
+    
+    if secondWeekCount > 0:
+        for key in finalResult["weeklyData"]["secondWeek"]:
+            finalResult["weeklyData"]["secondWeek"][key] = finalResult["weeklyData"]["secondWeek"][key] / firstWeekCount
+    else:
+        del finalResult["weeklyData"]["secondWeek"]
+    
+    if thirdWeekCount > 0:
+        for key in finalResult["weeklyData"]["thirdWeek"]:
+            finalResult["weeklyData"]["thirdWeek"][key] = finalResult["weeklyData"]["thirdWeek"][key] / firstWeekCount
+    else:
+        del finalResult["weeklyData"]["thirdWeek"]
+    
+    if fourthWeekCount > 0:
+        for key in finalResult["weeklyData"]["fourthWeek"]:
+            finalResult["weeklyData"]["fourthWeek"][key] = finalResult["weeklyData"]["fourthWeek"][key] / firstWeekCount
+    else:
+        del finalResult["weeklyData"]["fourthWeek"]
+    
+    counter["weeklyData"] = finalResult["weeklyData"]
+
+    return json.dumps(counter, indent=4, default=json_util.default)
+
+
+####################################################################
+#get the month data
+@app.route('/api/getMonthData',methods = ["GET","POST"])
+def getMonthData():
+
+    
+    # Custom Modal to predict the sentiment of each text
+    modal = joblib.load('model.pkl')
+
+    # startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
+    # endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
+
+    currentDate = datetime.datetime(2020,5,30,0,0,0)
+    dateCount = 30
+
+    while dateCount >= 0:
+        for times in range(0,3):
+            startTimeStampHour = 0
+            currentTimeStampHour = 0
+            
+            if times == 0:
+                startTimeStampHour = 0
+                currentTimeStampHour = 8
+            elif times == 1:
+                startTimeStampHour = 8
+                currentTimeStampHour = 16
+            elif times == 2:
+                startTimeStampHour = 16
+                currentTimeStampHour = 23
+
+            print("=========")
+            print("Starting to collect data for date :" + str(currentDate).split(" ")[0])
+            # Variables to store resultant data
+            posts = {"date" : str(currentDate).split(" ")[0], "hashtags":{}, "results":{},"mentions":{}}
+            posts["results"][str(startTimeStampHour) + "-" + str(currentTimeStampHour)] = []
+            hashtagsCounter = {}
+            mentionsCounter = {}
+
+            # fetch hashtags from the db
+            fetchedHashtags = mongo.db.hashtags.find({"uniqueID":"1"})
+            fetchedHashtags = fetchedHashtags[0]["hashtags"]
+
+            # Loop through the list of hashtags
+            # Get the tweets for each hastag
+            for queryString in fetchedHashtags:
+                limit = 300
+                count = 0
+                queryString = "#" + queryString
+                for tweet in tweepy.Cursor(auth_api.search,q=queryString,count=200,
+                                lang="en",geocode="22.9734,78.6569,1000km").items():
+                    print("Collecting data for date :" + str(currentDate).split(" ")[0] + " hashtags : " + queryString + " , timeStamp : " + str(startTimeStampHour) + " - "  + str(currentTimeStampHour))
+                    tweets = ""
+                    # Collect the tweets for the past 6 hrs
+                    # if tweet.created_at < endTime and tweet.created_at > startTime:
+
+                    # Predictions
+                    customTokens = removeNoise(word_tokenize(tweet.text))
+                    prediction = modal.classify(dict([token, True] for token in customTokens))
+
+                    tweets += tweet.text + "\n"            
+                    data = {
+                        "id" : tweet.id,
+                        "text" : tweet.text,
+                        "prediction" : prediction,
+                        "screenName" : tweet.user.screen_name,
+                        "followersCount":tweet.user.followers_count,
+                        "profilePicURL" : tweet.user.profile_image_url,
+                        "location" : tweet.user.location,
+                        "favouriteCount" : tweet.favorite_count,
+                        "retweetCount" : tweet.retweet_count,
+                        "userFriendsCount" : tweet.user.friends_count,
+                        "date" : str(tweet.created_at).split(" ")[0],
+                        "time" : str(tweet.created_at).split(" ")[1]
+                    }
+                    
+
+                    # Exception handling because some of the posts doesn't have the "possibly_sensitive" attribute
+                    try:
+                        data["isSensitive"] = tweet.possibly_sensitive
+                    except:
+                        pass
+                    
+                    posts["results"][str(startTimeStampHour)+"-"+str(currentTimeStampHour)].append(data)
+
+                    # Calculate the frequency of the hashtags 
+                    for data in tweet.entities["hashtags"]:
+                        if data["text"].capitalize() in hashtagsCounter:
+                            hashtagsCounter[data["text"].capitalize()] += 1
+                        else:
+                            hashtagsCounter[data["text"].capitalize()] = 0
+
+                    for data in tweet.entities["user_mentions"]:
+                        if data["screen_name"].capitalize() in mentionsCounter:
+                            mentionsCounter[data["screen_name"].capitalize()] += 1
+                        else:
+                            mentionsCounter[data["screen_name"].capitalize()] = 0
+                    
+                    count += 1
+                    if(count == limit):
+                        break
+                
+
+            
+
+                
+
+            # Sort the dictionary by the value
+            sortedHashTagsCounter =  {k: v for k, v in reversed(sorted(hashtagsCounter.items(), key=lambda item: item[1]))}
+            sortedMentionsCounter =  {k: v for k, v in reversed(sorted(mentionsCounter.items(), key=lambda item: item[1]))}
+
+            
+            # Add the top 5 hastags in the result
+            count = 0
+            for key in sortedHashTagsCounter:
+                posts["hashtags"][key] = sortedHashTagsCounter[key]
+                count += 1
+                if count == 5:
+                    break
+            
+            # Add the top 20 user mentions in the result
+            count = 0
+            for key in sortedMentionsCounter:
+                posts["mentions"][key] = sortedMentionsCounter[key]
+                count += 1
+                if count == 20:
+                    break
+
+            # Find the tones of the tweets
+            toneAnalysis = tone_analyzer.tone({'text': tweets},content_type='application/json').get_result()
+            # Find the sentiment, emotions and keywords
+            sentimentAnalysis = natural_language_understanding.analyze(text = tweets,features=Features(sentiment=SentimentOptions(),emotion=EmotionOptions(),keywords=KeywordsOptions(sentiment=True,emotion=True,limit=2))).get_result()
+            
+        
+            posts["results"][str(startTimeStampHour)+"-"+str(currentTimeStampHour)][0] = sentimentAnalysis
+            posts["results"][str(startTimeStampHour)+"-"+str(currentTimeStampHour)][1] = toneAnalysis
+        
+            # Write results to the file
+            with open('result.json', 'w') as fp:
+                json.dumps(posts, indent=4, default=json_util.default)
+
+
+            # Store the results to the database
+            existingData = mongo.db.tweets.find_one({"date":currentDate})
+            
+            if existingData == None:
+                mongo.db.tweets.insert(posts)
+                # pass  
+                print("Tweets Collected and Analyzed, Date: "  + str(currentDate).split(" ")[0] + str(startTimeStampHour) + " - " +  str(currentTimeStampHour))
+            else:
+                # Merge the two dictionaries
+                newHashtags = Merge(existingData["hashtags"], posts["hashtags"])
+                newMentions = Merge(existingData["mentions"],posts["mentions"])
+
+                # Update Data in DB
+                mongo.db.tweets.update({"date":str(currentDate).split(" ")[0]},{"$set":{"hashtags": newHashtags}})
+                mongo.db.tweets.update({"date":str(currentDate).split(" ")[0]},{"$set":{"mentions": newMentions}})
+                mongo.db.tweets.update({"date":str(currentDate).split(" ")[0]},{"$set":{"results." + (str(startTimeStampHour) + "-" + str(currentTimeStampHour)) : posts["results"][str(startTimeStampHour) + "-" + str(currentTimeStampHour)]}})
+            posts = json.dumps(posts, indent=4, default=json_util.default)
+            
+        dateCount -= 1
+    return posts
+        
+
+    
+###################################################################
 # Serve React App
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

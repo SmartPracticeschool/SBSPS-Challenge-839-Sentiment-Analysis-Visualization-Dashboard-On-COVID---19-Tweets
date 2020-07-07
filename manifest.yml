@@ -2,4 +2,3 @@
   - name: tweezy
     random-route: true
     memory: 128M
-    buildpack: https://github.com/cloudfoundry/python-buildpack.git
