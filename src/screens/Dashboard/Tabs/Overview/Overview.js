@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 
 // Stylesheet
 import "./Overview.css";
@@ -10,8 +10,28 @@ import { ResponsiveBump } from "@nivo/bump";
 // Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+import { Context } from "../../../../context/Context";
 
 const Overview = () => {
+  const normalize = (array, number) => {
+    var max = array[0];
+    var min = array[0];
+
+    for (var i = 0; i < array.length; i++) max = Math.max(max, array[i]);
+    for (var i = 0; i < array.length; i++) min = Math.min(min, array[i]);
+
+    var a = 1;
+    var b = 4;
+
+    var numerator = number - min;
+    var denom = max - min;
+
+    var res = (b - a) * (numerator / denom) + a;
+    console.log(res);
+    return parseFloat(res).toFixed(0);
+  };
+
+  const { thisMonthTweets } = useContext(Context);
   const [data, setData] = useState([
     {
       id: "japan",
@@ -41,136 +61,38 @@ const Overview = () => {
     },
   ]);
 
-  const [barData, setBarData] = useState([
-    {
-      id: "Serie 1",
-      data: [
-        {
-          x: 2000,
-          y: 1,
-        },
-        {
-          x: 2001,
-          y: 1,
-        },
-        {
-          x: 2002,
-          y: 5,
-        },
-        {
-          x: 2003,
-          y: 4,
-        },
-        {
-          x: 2004,
-          y: 4,
-        },
-      ],
-    },
-    {
-      id: "Serie 2",
-      data: [
-        {
-          x: 2000,
-          y: 1,
-        },
-        {
-          x: 2001,
-          y: 2,
-        },
-        {
-          x: 2002,
-          y: 2,
-        },
-        {
-          x: 2003,
-          y: 3,
-        },
-        {
-          x: 2004,
-          y: 1,
-        },
-      ],
-    },
-    {
-      id: "Serie 3",
-      data: [
-        {
-          x: 2000,
-          y: 3,
-        },
-        {
-          x: 2001,
-          y: 4,
-        },
-        {
-          x: 2002,
-          y: 3,
-        },
-        {
-          x: 2003,
-          y: 5,
-        },
-        {
-          x: 2004,
-          y: 4,
-        },
-      ],
-    },
-    {
-      id: "Serie 4",
-      data: [
-        {
-          x: 2000,
-          y: 1,
-        },
-        {
-          x: 2001,
-          y: 2,
-        },
-        {
-          x: 2002,
-          y: 3,
-        },
-        {
-          x: 2003,
-          y: 5,
-        },
-        {
-          x: 2004,
-          y: 2,
-        },
-      ],
-    },
-    {
-      id: "Serie 5",
-      data: [
-        {
-          x: 2000,
-          y: 1,
-        },
-        {
-          x: 2001,
-          y: 5,
-        },
-        {
-          x: 2002,
-          y: 4,
-        },
-        {
-          x: 2003,
-          y: 3,
-        },
-        {
-          x: 2004,
-          y: 1,
-        },
-      ],
-    },
-  ]);
+  const [barData, setBarData] = useState([]);
+
+  const setBumpChartData = () => {
+    var overallData = [];
+    Object.keys(thisMonthTweets.weeklyData).forEach((key) => {
+      var subData = { id: key, data: [] };
+      var arrayList = []; // For normalization
+      Object.keys(thisMonthTweets.weeklyData[key]).forEach((emotion) => {
+        arrayList.push(thisMonthTweets.weeklyData[key][emotion]);
+      });
+      Object.keys(thisMonthTweets.weeklyData[key]).forEach((emotion) => {
+        var emotionData = {};
+        emotionData.x = emotion;
+        emotionData.y = normalize(
+          arrayList,
+          thisMonthTweets.weeklyData[key][emotion]
+        );
+        subData.data.push(emotionData);
+      });
+      overallData.push(subData);
+    });
+
+    setBarData(overallData);
+    // console.log(overallData);
+  };
+  useEffect(() => {
+    setBumpChartData();
+  }, []);
   return (
     <div className="main-content">
       <div className="initial-statistics-grid grid-container">
+        {/* <button onClick={setBumpChartData}></button> */}
         {/* First Column */}
         <div className="grid-item" style={{ height: 150 }}>
           <p className="statistics-title">

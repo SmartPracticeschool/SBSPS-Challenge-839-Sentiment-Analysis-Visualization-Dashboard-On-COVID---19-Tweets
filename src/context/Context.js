@@ -1,9 +1,20 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 
 export const Context = createContext();
 
 const ContextProvider = (props) => {
-  return <Context.Provider value={{}}>{props.children}</Context.Provider>;
+  const [thisMonthTweets, setThisMonthTweets] = useState([]);
+
+  return (
+    <Context.Provider
+      value={{
+        thisMonthTweets,
+        setThisMonthTweets,
+      }}
+    >
+      {props.children}
+    </Context.Provider>
+  );
 };
 
 export default ContextProvider;
