@@ -32,36 +32,32 @@ const Overview = () => {
   };
 
   const { thisMonthTweets } = useContext(Context);
-  const [data, setData] = useState([
-    {
-      id: "japan",
-      color: "hsl(200, 70%, 50%)",
-      data: [
-        {
-          x: "plane",
-          y: 244,
-        },
-        {
-          x: "helicopter",
-          y: 197,
-        },
-        {
-          x: "boat",
-          y: 273,
-        },
-        {
-          x: "train",
-          y: 278,
-        },
-        {
-          x: "subway",
-          y: 294,
-        },
-      ],
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [hashtagsData, setHashtagsData] = useState([]);
 
   const [barData, setBarData] = useState([]);
+
+  const setDataForOverallSentiment = () => {
+    var overallData = [{ id: "", color: "hsl(200, 70%, 50%)", data: [] }];
+    Object.keys(thisMonthTweets.weeklyScore).forEach((key) => {
+      var subData = {};
+      subData.x = key;
+      subData.y = parseFloat(thisMonthTweets.weeklyScore[key] * 100).toFixed(0);
+      overallData[0].data.push(subData);
+    });
+    setData(overallData);
+  };
+
+  const setDataForHashtags = () => {
+    var overallData = [{ id: "", color: "hsl(200, 70%, 50%)", data: [] }];
+    Object.keys(thisMonthTweets.hashtags).forEach((key) => {
+      var subData = {};
+      subData.x = key;
+      subData.y = thisMonthTweets.hashtags[key];
+      overallData[0].data.push(subData);
+    });
+    setHashtagsData(overallData);
+  };
 
   const setBumpChartData = () => {
     var overallData = [];
@@ -88,6 +84,8 @@ const Overview = () => {
   };
   useEffect(() => {
     setBumpChartData();
+    setDataForOverallSentiment();
+    setDataForHashtags();
   }, []);
   return (
     <div className="main-content">
@@ -96,7 +94,7 @@ const Overview = () => {
         {/* First Column */}
         <div className="grid-item" style={{ height: 150 }}>
           <p className="statistics-title">
-            26, 9000
+            {thisMonthTweets.totalTweets}
             <br />
             <small className="small">Tweets Analyzed</small>
           </p>
@@ -118,19 +116,11 @@ const Overview = () => {
               tickSize: 5,
               tickPadding: 5,
               tickRotation: 0,
-              legend: "Number of tweets analyzed",
+              legend: "Overall sentiment (in terms of weeks)",
               legendOffset: 36,
               legendPosition: "middle",
             }}
-            axisLeft={{
-              orient: "left",
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              legend: "count",
-              legendOffset: -40,
-              legendPosition: "middle",
-            }}
+            axisLeft={null}
             colors={{ scheme: "dark2" }}
             pointSize={10}
             pointColor={{ theme: "background" }}
@@ -192,12 +182,12 @@ const Overview = () => {
         {/* Second Column */}
         <div className="grid-item" style={{ height: 150 }}>
           <p className="statistics-title">
-            30, 000
+            {thisMonthTweets.analyzedUsers}
             <br />
             <small className="small">Users Analyzed</small>
           </p>
           <ResponsiveLine
-            data={data}
+            data={hashtagsData}
             margin={{ top: 0, right: 110, bottom: 50, left: 0 }}
             xScale={{ type: "point" }}
             yScale={{
@@ -214,19 +204,11 @@ const Overview = () => {
               tickSize: 5,
               tickPadding: 5,
               tickRotation: 0,
-              legend: "Number of users analyzed",
+              legend: "Frequency of hastags",
               legendOffset: 36,
               legendPosition: "middle",
             }}
-            axisLeft={{
-              orient: "left",
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              legend: "count",
-              legendOffset: -40,
-              legendPosition: "middle",
-            }}
+            axisLeft={null}
             colors={{ scheme: "dark2" }}
             pointSize={10}
             pointColor={{ theme: "background" }}
