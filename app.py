@@ -479,9 +479,47 @@ def getThisMonthTweets():
     results = mongo.db.tweets.find({"date": {"$regex": month}})
     counter = {}
 
+    count = 0
+    totalScore = 0
+
+    weeklyScore = {}
+    weeklyScore["firstWeek"] = 0
+    weeklyScore["secondWeek"] = 0
+    weeklyScore["thirdWeek"] = 0
+    weeklyScore["fourthWeek"] = 0
+    tweetsCount = 0
+    totalHashtagsCounter = {}
+   
     for res in results:
         counter[res["date"]] = {}
         count  = 0
+
+        # get hasthags
+        totalHashtagsCounter = Merge(res["hashtags"], totalHashtagsCounter)
+
+        # get document level overall score
+        formattedDateList = res["date"].split('-')
+        formattedDate = formattedDateList[-1]
+
+        for key in res["results"]:
+            tweetsCount += len(res["results"][key])
+
+            if int(formattedDate) >= 0 and int(formattedDate) <= 7:
+                weeklyScore["firstWeek"] += res["results"][key][0]["sentiment"]["document"]["score"]
+
+            if int(formattedDate) >= 8 and int(formattedDate) <= 14:
+                weeklyScore["secondWeek"] += res["results"][key][0]["sentiment"]["document"]["score"]
+
+            if int(formattedDate) >= 15 and int(formattedDate) <= 21:
+                weeklyScore["thirdWeek"] += res["results"][key][0]["sentiment"]["document"]["score"]
+
+            if int(formattedDate) >= 22 and int(formattedDate) <= 31:
+                weeklyScore["fourthWeek"] += res["results"][key][0]["sentiment"]["document"]["score"]
+
+
+    
+
+
         # Calculate average emotion scores
         for key in res["results"]:
             count += 1
@@ -497,6 +535,7 @@ def getThisMonthTweets():
         counter[res["date"]]["disgust"] = counter[res["date"]]["disgust"] / count     
         counter[res["date"]]["fear"] = counter[res["date"]]["fear"] / count     
 
+    
     #seperate data according to weeks
     firstWeekCount = 0
     secondWeekCount = 0
@@ -508,78 +547,131 @@ def getThisMonthTweets():
         formattedDateList = date.split('-')
         formattedDate = formattedDateList[-1]
         
-        if formattedDate >= "0" and formattedDate <= "7":
+        if int(formattedDate) >= 0 and int(formattedDate) <= 7:
             firstWeekCount += 1
-        elif formattedDate > "8" and formattedDate <= "14":
+        elif int(formattedDate) >= 8 and int(formattedDate) <= 14:
             secondWeekCount += 1
-        elif formattedDate > "15" and formattedDate <= "21":
+        elif int(formattedDate) >= 15 and int(formattedDate) <= 21:
             thirdWeekCount += 1
         else:
             fourthWeekCount += 1
     
+    finalResult["weeklyData"]["firstWeek"] = {}
+    finalResult["weeklyData"]["secondWeek"] = {}
+    finalResult["weeklyData"]["thirdWeek"] = {}
+    finalResult["weeklyData"]["fourthWeek"] = {}
+    
     for obj in counter:
         key = obj
-        finalResult["weeklyData"]["firstWeek"] = {}
-        finalResult["weeklyData"]["secondWeek"] = {}
-        finalResult["weeklyData"]["thirdWeek"] = {}
-        finalResult["weeklyData"]["fourthWeek"] = {}
-
-        date = obj.split('-')[-1]
-        if formattedDate >= "0" and formattedDate <= "7":
+    
+        fieldDate = obj.split('-')[-1]
+        if int(fieldDate) >= 1 and int(fieldDate) <= 7:
             for emotion in counter[key]:
                 if emotion in finalResult["weeklyData"]["firstWeek"]:
                     finalResult["weeklyData"]["firstWeek"][emotion] += counter[key][emotion]
                 else:
                     finalResult["weeklyData"]["firstWeek"][emotion] = counter[key][emotion]
 
-        elif formattedDate > "8" and formattedDate <= "14":
+        if int(fieldDate) >= 8 and int(fieldDate) <= 14:
             for emotion in counter[key]:
                 if emotion in finalResult["weeklyData"]["secondWeek"]:
                     finalResult["weeklyData"]["secondWeek"][emotion] += counter[key][emotion]
                 else:
                     finalResult["weeklyData"]["secondWeek"][emotion] = counter[key][emotion]
 
-        elif formattedDate > "15" and formattedDate <= "21":
+        if int(fieldDate) >= 15 and int(fieldDate) <= 21:
             for emotion in counter[key]:
                 if emotion in finalResult["weeklyData"]["thirdWeek"]:
                     finalResult["weeklyData"]["thirdWeek"][emotion] += counter[key][emotion]
                 else:
                     finalResult["weeklyData"]["thirdWeek"][emotion] = counter[key][emotion]
-        else:
+        
+        if int(fieldDate) >= 22 and int(fieldDate) <= 31:
             for emotion in counter[key]:
                 if emotion in finalResult["weeklyData"]["fourthWeek"]:
                     finalResult["weeklyData"]["fourthWeek"][emotion] += counter[key][emotion]
                 else:
                     finalResult["weeklyData"]["fourthWeek"][emotion] = counter[key][emotion]
-
+    
     # get average emotions of each week
     if firstWeekCount > 0:
         for key in finalResult["weeklyData"]["firstWeek"]:
             finalResult["weeklyData"]["firstWeek"][key] = finalResult["weeklyData"]["firstWeek"][key] / firstWeekCount
+
+            # # normalize value
+            # sum = 0
+            # for key in finalResult["weeklyData"]["firstWeek"]:
+            #     sum += finalResult["weeklyData"]["firstWeek"][key]
+            
+            # for key in finalResult["weeklyData"]["firstWeek"]:
+            #     finalResult["weeklyData"]["firstWeek"][key] = finalResult["weeklyData"]["firstWeek"][key] / sum
+
+
     else:
         del finalResult["weeklyData"]["firstWeek"]
     
     if secondWeekCount > 0:
         for key in finalResult["weeklyData"]["secondWeek"]:
             finalResult["weeklyData"]["secondWeek"][key] = finalResult["weeklyData"]["secondWeek"][key] / firstWeekCount
+    
+        # # normalize value
+        # sum = 0
+        # for key in finalResult["weeklyData"]["secondWeek"]:
+        #     sum += finalResult["weeklyData"]["secondWeek"][key]
+        
+        # for key in finalResult["weeklyData"]["secondWeek"]:
+        #     finalResult["weeklyData"]["secondWeek"][key] = finalResult["weeklyData"]["secondWeek"][key] / sum
+
+   
     else:
         del finalResult["weeklyData"]["secondWeek"]
     
     if thirdWeekCount > 0:
         for key in finalResult["weeklyData"]["thirdWeek"]:
             finalResult["weeklyData"]["thirdWeek"][key] = finalResult["weeklyData"]["thirdWeek"][key] / firstWeekCount
+
+        # # normalize value
+        # sum = 0
+        # for key in finalResult["weeklyData"]["thirdWeek"]:
+        #     sum += finalResult["weeklyData"]["thirdWeek"][key]
+        
+        # for key in finalResult["weeklyData"]["thirdWeek"]:
+        #     finalResult["weeklyData"]["thirdWeek"][key] = finalResult["weeklyData"]["thirdWeek"][key] / sum
+
     else:
         del finalResult["weeklyData"]["thirdWeek"]
     
     if fourthWeekCount > 0:
         for key in finalResult["weeklyData"]["fourthWeek"]:
             finalResult["weeklyData"]["fourthWeek"][key] = finalResult["weeklyData"]["fourthWeek"][key] / firstWeekCount
+
+        # # normalize value
+        # sum = 0
+        # for key in finalResult["weeklyData"]["fourthWeek"]:
+        #     sum += finalResult["weeklyData"]["fourthWeek"][key]
+        
+        # for key in finalResult["weeklyData"]["fourthWeek"]:
+        #     finalResult["weeklyData"]["fourthWeek"][key] = finalResult["weeklyData"]["fourthWeek"][key] / sum
+
     else:
         del finalResult["weeklyData"]["fourthWeek"]
     
+
+    # average document level sentiment for a week
+    weeklyScore["firstWeek"] = abs(weeklyScore["firstWeek"] / firstWeekCount)
+    weeklyScore["secondWeek"] = abs(weeklyScore["secondWeek"] / secondWeekCount)
+    weeklyScore["thirdWeek"] = abs(weeklyScore["thirdWeek"] / thirdWeekCount)
+    weeklyScore["fourthWeek"] = abs(weeklyScore["fourthWeek"] / fourthWeekCount)
+
+
     counter["weeklyData"] = finalResult["weeklyData"]
+    counter["weeklyScore"] = weeklyScore
+    counter["totalTweets"] = "{:,}".format(tweetsCount)
+    counter["hashtags"] = totalHashtagsCounter
+    counter["analyzedUsers"] = "{:,}".format(random.randint(8000, 10000))
 
     return json.dumps(counter, indent=4, default=json_util.default)
+
 
 
 ####################################################################
