@@ -36,3 +36,49 @@
     color:#6F787F;
     font-family: openSans;
 }
+.sub-stats{
+    color:#6F787F;
+    font-size: 15px;
+}
+.sub-stats-bold{
+    font-weight: bold;
+}
+table {
+    font-family: openSans;
+    font-size: 15px;
+    color:#212529;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f3f2
+}
+.table{
+    background-color: #fff;
+    padding:20px;
+    padding: top 10px;
+}
+.form-wrapper{
+    margin-bottom:20px;
+}
+.input-field{
+    padding:8px;
+    border: 1px solid #e5e6e7;
+    font-size: 15px;
+    width: 87%;
+}
+.select-field{
+    padding:8px;
+    border: 1px solid #e5e6e7;
+    font-size: 15px;
+    background-color: #fff;
+    margin-left:5px;    
+    width: 10%;
+}

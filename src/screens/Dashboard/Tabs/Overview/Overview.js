@@ -47,7 +47,7 @@ const Overview = () => {
       data: [
         {
           x: 2000,
-          y: 12,
+          y: 1,
         },
         {
           x: 2001,
@@ -55,15 +55,15 @@ const Overview = () => {
         },
         {
           x: 2002,
-          y: 6,
+          y: 5,
         },
         {
           x: 2003,
-          y: 9,
+          y: 4,
         },
         {
           x: 2004,
-          y: 6,
+          y: 4,
         },
       ],
     },
@@ -72,7 +72,7 @@ const Overview = () => {
       data: [
         {
           x: 2000,
-          y: 11,
+          y: 1,
         },
         {
           x: 2001,
@@ -80,15 +80,15 @@ const Overview = () => {
         },
         {
           x: 2002,
-          y: 12,
+          y: 2,
         },
         {
           x: 2003,
-          y: 8,
+          y: 3,
         },
         {
           x: 2004,
-          y: 10,
+          y: 1,
         },
       ],
     },
@@ -97,19 +97,19 @@ const Overview = () => {
       data: [
         {
           x: 2000,
-          y: 8,
+          y: 3,
         },
         {
           x: 2001,
-          y: 7,
+          y: 4,
         },
         {
           x: 2002,
-          y: 8,
+          y: 3,
         },
         {
           x: 2003,
-          y: 6,
+          y: 5,
         },
         {
           x: 2004,
@@ -126,15 +126,15 @@ const Overview = () => {
         },
         {
           x: 2001,
-          y: 12,
+          y: 2,
         },
         {
           x: 2002,
-          y: 7,
+          y: 3,
         },
         {
           x: 2003,
-          y: 10,
+          y: 5,
         },
         {
           x: 2004,
@@ -147,7 +147,7 @@ const Overview = () => {
       data: [
         {
           x: 2000,
-          y: 10,
+          y: 1,
         },
         {
           x: 2001,
@@ -155,190 +155,15 @@ const Overview = () => {
         },
         {
           x: 2002,
-          y: 10,
-        },
-        {
-          x: 2003,
-          y: 7,
-        },
-        {
-          x: 2004,
-          y: 11,
-        },
-      ],
-    },
-    {
-      id: "Serie 6",
-      data: [
-        {
-          x: 2000,
-          y: 2,
-        },
-        {
-          x: 2001,
-          y: 10,
-        },
-        {
-          x: 2002,
-          y: 11,
-        },
-        {
-          x: 2003,
-          y: 5,
-        },
-        {
-          x: 2004,
-          y: 7,
-        },
-      ],
-    },
-    {
-      id: "Serie 7",
-      data: [
-        {
-          x: 2000,
-          y: 3,
-        },
-        {
-          x: 2001,
-          y: 9,
-        },
-        {
-          x: 2002,
-          y: 3,
-        },
-        {
-          x: 2003,
-          y: 1,
-        },
-        {
-          x: 2004,
-          y: 9,
-        },
-      ],
-    },
-    {
-      id: "Serie 8",
-      data: [
-        {
-          x: 2000,
-          y: 9,
-        },
-        {
-          x: 2001,
-          y: 11,
-        },
-        {
-          x: 2002,
-          y: 2,
-        },
-        {
-          x: 2003,
-          y: 3,
-        },
-        {
-          x: 2004,
-          y: 12,
-        },
-      ],
-    },
-    {
-      id: "Serie 9",
-      data: [
-        {
-          x: 2000,
-          y: 7,
-        },
-        {
-          x: 2001,
-          y: 8,
-        },
-        {
-          x: 2002,
-          y: 1,
-        },
-        {
-          x: 2003,
           y: 4,
+        },
+        {
+          x: 2003,
+          y: 3,
         },
         {
           x: 2004,
           y: 1,
-        },
-      ],
-    },
-    {
-      id: "Serie 10",
-      data: [
-        {
-          x: 2000,
-          y: 5,
-        },
-        {
-          x: 2001,
-          y: 4,
-        },
-        {
-          x: 2002,
-          y: 5,
-        },
-        {
-          x: 2003,
-          y: 11,
-        },
-        {
-          x: 2004,
-          y: 3,
-        },
-      ],
-    },
-    {
-      id: "Serie 11",
-      data: [
-        {
-          x: 2000,
-          y: 4,
-        },
-        {
-          x: 2001,
-          y: 6,
-        },
-        {
-          x: 2002,
-          y: 9,
-        },
-        {
-          x: 2003,
-          y: 2,
-        },
-        {
-          x: 2004,
-          y: 5,
-        },
-      ],
-    },
-    {
-      id: "Serie 12",
-      data: [
-        {
-          x: 2000,
-          y: 6,
-        },
-        {
-          x: 2001,
-          y: 3,
-        },
-        {
-          x: 2002,
-          y: 4,
-        },
-        {
-          x: 2003,
-          y: 12,
-        },
-        {
-          x: 2004,
-          y: 8,
         },
       ],
     },
@@ -419,6 +244,27 @@ const Overview = () => {
               },
             ]}
           />
+
+          {/* <div className="grid-container">
+            <div className="grid-item">
+              <p className="sub-stats">
+                <span className="sub-stats-bold">Positive</span> <br />{" "}
+                <small>20%</small>
+              </p>
+            </div>
+            <div>
+              <p className="sub-stats">
+                <span className="sub-stats-bold">Negative</span> <br />{" "}
+                <small>20%</small>
+              </p>
+            </div>
+            <div>
+              <p className="sub-stats">
+                <span className="sub-stats-bold">Neutral</span> <br />{" "}
+                <small>20%</small>
+              </p>
+            </div>
+          </div> */}
         </div>
 
         {/* Second Column */}
@@ -521,7 +367,7 @@ const Overview = () => {
 
       {/* Bar Chart */}
       <div className="grid-container">
-        <div className="grid-item" style={{ height: 300, marginTop: 20 }}>
+        <div className="grid-item" style={{ height: 300, marginTop: 40 }}>
           <h5 className="title">Emotions among people (Jan)</h5>
           <ResponsiveBump
             data={barData}
@@ -564,6 +410,63 @@ const Overview = () => {
               legendOffset: -40,
             }}
           />
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="table" style={{ marginTop: 150 }}>
+        <div className="table-wrapper">
+          <h3 style={{ color: "#6F787F" }}>Search Tweets</h3>
+          <input
+            type="text"
+            className="input-field"
+            placeholder="Search here..."
+          />
+          <select className="select-field">
+            <option>Positive</option>
+            <option>Negative</option>
+            <option>Neutral</option>
+          </select>
+          <div className="grid-container form-wrapper">
+            <div className="grid-item"></div>
+          </div>
+          <table>
+            <tr>
+              <th>Username</th>
+              <th>Tweet</th>
+              <th>Sentiment</th>
+            </tr>
+            <tr>
+              <td>Alfreds Futterkiste</td>
+              <td>Maria Anders</td>
+              <td>Germany</td>
+            </tr>
+            <tr>
+              <td>Centro comercial Moctezuma</td>
+              <td>Francisco Chang</td>
+              <td>Mexico</td>
+            </tr>
+            <tr>
+              <td>Ernst Handel</td>
+              <td>Roland Mendel</td>
+              <td>Austria</td>
+            </tr>
+            <tr>
+              <td>Island Trading</td>
+              <td>Helen Bennett</td>
+              <td>UK</td>
+            </tr>
+            <tr>
+              <td>Laughing Bacchus Winecellars</td>
+              <td>Yoshi Tannamuri</td>
+              <td>Canada</td>
+            </tr>
+            <tr>
+              <td>Magazzini Alimentari Riuniti</td>
+              <td>Giovanni Rovelli</td>
+              <td>Italy</td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>
