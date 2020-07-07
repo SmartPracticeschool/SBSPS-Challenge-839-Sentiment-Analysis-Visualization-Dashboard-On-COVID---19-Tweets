@@ -9,17 +9,25 @@ import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { Overview } from "./Tabs";
 
 // actions
-import { getThisMonthTweets } from "./../../actions/actions";
+import { getThisMonthTweets, getTweetsByMonth } from "./../../actions/actions";
 
 // Context
 import { Context } from "../../context/Context";
 
 const Home = () => {
-  const { thisMonthTweets, setThisMonthTweets } = useContext(Context);
+  const {
+    thisMonthTweets,
+    setThisMonthTweets,
+    setThisMonthTweetsCollection,
+  } = useContext(Context);
 
   useEffect(() => {
     getThisMonthTweets("2020-06-05").then((res) => {
       setThisMonthTweets(res.data);
+    });
+
+    getTweetsByMonth("2020-06-05").then((res) => {
+      setThisMonthTweetsCollection(res.data);
     });
   }, []);
 

@@ -6,6 +6,10 @@
     display: grid;
     grid-template-columns: auto auto auto;
 }
+.grid-container-4{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+}
 .grid-item{
     margin-right:10px;
 }

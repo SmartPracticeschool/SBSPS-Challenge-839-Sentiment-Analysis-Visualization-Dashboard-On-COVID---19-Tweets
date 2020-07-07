@@ -9,7 +9,12 @@ import { ResponsiveBump } from "@nivo/bump";
 
 // Font Awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThumbsDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faThumbsDown,
+  faSmile,
+  faSadCry,
+  faSmileWink,
+} from "@fortawesome/free-solid-svg-icons";
 import { Context } from "../../../../context/Context";
 
 const Overview = () => {
@@ -31,17 +36,23 @@ const Overview = () => {
     return parseFloat(res).toFixed(0);
   };
 
-  const { thisMonthTweets } = useContext(Context);
+  const { thisMonthTweets, thisMonthTweetsCollection } = useContext(Context);
   const [data, setData] = useState([]);
   const [hashtagsData, setHashtagsData] = useState([]);
-
+  const [totalHashTagsCount, setTotalHashTagsCount] = useState(0);
   const [barData, setBarData] = useState([]);
-
+  console.log(thisMonthTweetsCollection);
   const setDataForOverallSentiment = () => {
     var overallData = [{ id: "", color: "hsl(200, 70%, 50%)", data: [] }];
     Object.keys(thisMonthTweets.weeklyScore).forEach((key) => {
       var subData = {};
-      subData.x = key;
+      var newKey;
+      if (key === "firstWeek") newKey = "I";
+      else if (key === "secondWeek") newKey = "II";
+      else if (key === "thirdWeek") newKey = "III";
+      else newKey = "IV";
+
+      subData.x = newKey;
       subData.y = parseFloat(thisMonthTweets.weeklyScore[key] * 100).toFixed(0);
       overallData[0].data.push(subData);
     });
@@ -49,18 +60,22 @@ const Overview = () => {
   };
 
   const setDataForHashtags = () => {
+    var count = 0;
     var overallData = [{ id: "", color: "hsl(200, 70%, 50%)", data: [] }];
     Object.keys(thisMonthTweets.hashtags).forEach((key) => {
       var subData = {};
       subData.x = key;
       subData.y = thisMonthTweets.hashtags[key];
       overallData[0].data.push(subData);
+      count++;
     });
     setHashtagsData(overallData);
+    setTotalHashTagsCount(count);
   };
 
   const setBumpChartData = () => {
     var overallData = [];
+
     Object.keys(thisMonthTweets.weeklyData).forEach((key) => {
       var subData = { id: key, data: [] };
       var arrayList = []; // For normalization
@@ -82,6 +97,7 @@ const Overview = () => {
     setBarData(overallData);
     // console.log(overallData);
   };
+
   useEffect(() => {
     setBumpChartData();
     setDataForOverallSentiment();
@@ -157,28 +173,24 @@ const Overview = () => {
             ]}
           />
 
-          {/* <div className="grid-container">
-            <div className="grid-item">
-              <p className="sub-stats">
-                <span className="sub-stats-bold">Positive</span> <br />{" "}
-                <small>20%</small>
-              </p>
-            </div>
-            <div>
-              <p className="sub-stats">
-                <span className="sub-stats-bold">Negative</span> <br />{" "}
-                <small>20%</small>
-              </p>
-            </div>
-            <div>
-              <p className="sub-stats">
-                <span className="sub-stats-bold">Neutral</span> <br />{" "}
-                <small>20%</small>
-              </p>
-            </div>
-          </div> */}
+          <div className="grid-container-4">
+            {Object.keys(thisMonthTweets.weeklyScore).map((key) => {
+              var newKey;
+              if (key === "firstWeek") newKey = "I";
+              else if (key === "secondWeek") newKey = "II";
+              else if (key === "thirdWeek") newKey = "III";
+              else newKey = "IV";
+              return (
+                <div className="grid-item" key={key}>
+                  <p className="sub-stats">
+                    <span className="sub-stats-bold">{newKey}</span> <br />{" "}
+                    <small>{thisMonthTweets.weeklyScore[key].toFixed(2)}</small>
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
-
         {/* Second Column */}
         <div className="grid-item" style={{ height: 150 }}>
           <p className="statistics-title">
@@ -244,35 +256,53 @@ const Overview = () => {
               },
             ]}
           />
+
+          <div className="grid-container-4">
+            {Object.keys(thisMonthTweets.mentions)
+              .slice(0, 3)
+              .map((key) => {
+                return (
+                  <div className="grid-item" key={key}>
+                    <p className="sub-stats">
+                      <span className="sub-stats-bold" title={"@" + key}>
+                        {"@" + key.substring(0, 4) + ".."}
+                      </span>{" "}
+                      <br /> <small>{thisMonthTweets.mentions[key]}</small>
+                    </p>
+                  </div>
+                );
+              })}
+          </div>
         </div>
 
         {/* Third column */}
         <div className="grid-item">
           <h5 className="title">This Month Stats</h5>
           <p className="statistics-title">
-            30, 000
+            {thisMonthTweets.totalTweets}
             <br />
             <small className="small small-bold-text">
-              50 <FontAwesomeIcon icon={faThumbsDown} />
+              {/*    <FontAwesomeIcon icon={faThumbsDown} /> */}
             </small>
           </p>
 
           <p className="table-text">
-            58 <b>Hashtags</b>
+            {totalHashTagsCount} <b>Hashtags</b>
           </p>
           <p className="table-text">
-            2K+ <b>Mentions</b>
+            {thisMonthTweets.totalMentions} <b>Mentions</b>
           </p>
           <p className="table-text">
-            3K+ <b>Users</b>
+            {thisMonthTweets.analyzedUsers}
+            <b> Users</b>
           </p>
         </div>
       </div>
 
       {/* Bar Chart */}
       <div className="grid-container">
-        <div className="grid-item" style={{ height: 300, marginTop: 40 }}>
-          <h5 className="title">Emotions among people (Jan)</h5>
+        <div className="grid-item" style={{ height: 300, marginTop: 130 }}>
+          <h5 className="title">Emotions among people</h5>
           <ResponsiveBump
             data={barData}
             margin={{ top: 20, right: 100, bottom: 40, left: 60 }}
@@ -338,38 +368,38 @@ const Overview = () => {
             <tr>
               <th>Username</th>
               <th>Tweet</th>
+              <th>Likes</th>
+              <th>Followers</th>
               <th>Sentiment</th>
             </tr>
-            <tr>
-              <td>Alfreds Futterkiste</td>
-              <td>Maria Anders</td>
-              <td>Germany</td>
-            </tr>
-            <tr>
-              <td>Centro comercial Moctezuma</td>
-              <td>Francisco Chang</td>
-              <td>Mexico</td>
-            </tr>
-            <tr>
-              <td>Ernst Handel</td>
-              <td>Roland Mendel</td>
-              <td>Austria</td>
-            </tr>
-            <tr>
-              <td>Island Trading</td>
-              <td>Helen Bennett</td>
-              <td>UK</td>
-            </tr>
-            <tr>
-              <td>Laughing Bacchus Winecellars</td>
-              <td>Yoshi Tannamuri</td>
-              <td>Canada</td>
-            </tr>
-            <tr>
-              <td>Magazzini Alimentari Riuniti</td>
-              <td>Giovanni Rovelli</td>
-              <td>Italy</td>
-            </tr>
+            {thisMonthTweetsCollection.slice(2, 20).map((tweet) => {
+              return (
+                <tr>
+                  <td>{tweet.screenName}</td>
+                  <td>{tweet.text}</td>
+                  <td>{tweet.favouriteCount}</td>
+                  <td>{tweet.followersCount}</td>
+                  <td>
+                    {tweet.prediction === "Positive" ? (
+                      <FontAwesomeIcon
+                        icon={faSmile}
+                        style={{ color: "#229E76" }}
+                      />
+                    ) : tweet.prediction === "Negative" ? (
+                      <FontAwesomeIcon
+                        icon={faSadCry}
+                        style={{ color: "#e74c3c" }}
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faSmileWink}
+                        style={{ color: "#f39c12" }}
+                      />
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </table>
         </div>
       </div>

@@ -4,12 +4,17 @@ export const Context = createContext();
 
 const ContextProvider = (props) => {
   const [thisMonthTweets, setThisMonthTweets] = useState([]);
+  const [thisMonthTweetsCollection, setThisMonthTweetsCollection] = useState(
+    []
+  );
 
   return (
     <Context.Provider
       value={{
         thisMonthTweets,
         setThisMonthTweets,
+        thisMonthTweetsCollection,
+        setThisMonthTweetsCollection,
       }}
     >
       {props.children}

@@ -9,3 +9,11 @@ export const getThisMonthTweets = (date) => {
 
   return res;
 };
+
+export const getTweetsByMonth = (date) => {
+  const res = axios.post(`${Constants.BASE_URL}/api/getAllTweetsByMonth`, {
+    date,
+  });
+
+  return res;
+};
