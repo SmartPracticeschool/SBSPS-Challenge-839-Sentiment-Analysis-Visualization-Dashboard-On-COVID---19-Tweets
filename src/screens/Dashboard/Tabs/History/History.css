@@ -1,0 +1,33 @@
+.card {
+  background-color: #fff;
+  border-radius: 5px;
+}
+.card-header {
+  padding: 1px 0px 1px 20px;
+  color: #6d7072;
+  font-family: openSansSemiBold;
+  font-size: 15px;
+  border-bottom: 1px solid #d4d4d46b;
+}
+.card-content {
+  padding: 5px 5px 5px 5px;
+  height: 250px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 10px 10px 20px 5px;
+}
+
+.grid-item {
+  margin-right: 10px;
+}
+
+.title-header {
+  margin: 30px;
+  margin-top: 40px;
+  font-family: openSansLight;
+  color: #7d7f81;
+  font-size: 18px;
+}
