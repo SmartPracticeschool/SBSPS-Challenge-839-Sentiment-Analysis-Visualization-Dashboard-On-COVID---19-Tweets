@@ -426,11 +426,10 @@ def getTweetsByDate():
     else:
         return {}
 
+
 # Get all tweets in the database
-
-
-@app.route('/api/getAllTweets', methods=['GET'])
-def getAllTweets():
+@app.route('/api/getAllTweetsEmotions', methods=['GET'])
+def getAllTweetsEmotions():
     results = mongo.db.tweets.find({})
     counter = {}
 
@@ -454,6 +453,20 @@ def getAllTweets():
 
     return json.dumps(counter, indent=4, default=json_util.default)
 
+# get all tweets by month
+@app.route('/api/getAllTweetsByMonth', methods=['GET',"POST"])
+def getAllTweetsByMonth():
+    date = request.json["date"]
+    splittedDate = date.split('-')
+    month = "-" + splittedDate[1] + "-"
+    results = mongo.db.tweets.find({"date": {"$regex": month}})
+
+    count = 0
+    for res in results:
+        for key in res["results"]:
+            return json.dumps(res["results"][key], indent=4, default=json_util.default)
+        
+    
 
 @app.route('/api/getCoordinates', methods=['GET', "POST"])
 def getCoordinates():
@@ -461,10 +474,13 @@ def getCoordinates():
     req = requests.get("https://geocoder.ls.hereapi.com/6.2/geocode.json?searchtext=" +
                        city+"&gen=9&apiKey=Omfb3D_6gnrF9h7r_TsQAyFJrj47fZcbqIeN41Uxxxw")
     data = req.json()
-    try:
-        result = data["Response"]["View"][0]["Result"][0]["Location"]["DisplayPosition"]
-    except:
-        result = {}
+        try:
+            if data["Response"]["View"][0]["Result"][0]["Location"]["Address"]["Country"] == "IND":
+                result = {"state":data["Response"]["View"][0]["Result"][0]["Location"]["Address"]["AdditionalData"][1]["value"]}
+            else:
+                result = {}
+        except:
+            result = {}
 
     return result
 
@@ -489,6 +505,7 @@ def getThisMonthTweets():
     weeklyScore["fourthWeek"] = 0
     tweetsCount = 0
     totalHashtagsCounter = {}
+    totalMentionsCounter = {}
    
     for res in results:
         counter[res["date"]] = {}
@@ -496,6 +513,7 @@ def getThisMonthTweets():
 
         # get hasthags
         totalHashtagsCounter = Merge(res["hashtags"], totalHashtagsCounter)
+        totalMentionsCounter = Merge(res["mentions"], totalMentionsCounter)
 
         # get document level overall score
         formattedDateList = res["date"].split('-')
@@ -656,6 +674,10 @@ def getThisMonthTweets():
     else:
         del finalResult["weeklyData"]["fourthWeek"]
     
+    #get total mentions count
+    mentionCount = 0
+    for mention in totalMentionsCounter:
+        mentionCount += 1
 
     # average document level sentiment for a week
     weeklyScore["firstWeek"] = abs(weeklyScore["firstWeek"] / firstWeekCount)
@@ -668,6 +690,8 @@ def getThisMonthTweets():
     counter["weeklyScore"] = weeklyScore
     counter["totalTweets"] = "{:,}".format(tweetsCount)
     counter["hashtags"] = totalHashtagsCounter
+    counter["mentions"] = totalMentionsCounter
+    counter["totalMentions"] = mentionCount
     counter["analyzedUsers"] = "{:,}".format(random.randint(8000, 10000))
 
     return json.dumps(counter, indent=4, default=json_util.default)
