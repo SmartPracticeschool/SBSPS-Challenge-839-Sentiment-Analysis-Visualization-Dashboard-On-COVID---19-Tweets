@@ -13,7 +13,7 @@ import {
   faSadTear,
   faSmile,
   faMeh,
-  faKiwiBird,
+  faSadCry,
   faUserAlt,
   faHashtag,
   faRetweet,
@@ -36,14 +36,14 @@ const TodayReport = () => {
     // Overall score calculation (out of 5)
     var overAllScore = Math.abs(todayTweets.overAllSentimentScore);
     var overAllScoreLabel = todayTweets.overAllSentimentLabel;
-
+    console.log(todayTweets.overAllSentimentScore);
     var finalScore;
     var finalLabel;
     var finalLabelColor;
 
     if (
       overAllScore >= 0.01 &&
-      overAllScore <= 0.5 &&
+      overAllScore <= 0.59 &&
       overAllScoreLabel === "Negative"
     ) {
       finalScore = Math.abs(overAllScore) * 2;
@@ -51,7 +51,7 @@ const TodayReport = () => {
       finalLabelColor = "#c0392b";
     } else if (
       overAllScore >= 0.06 &&
-      overAllScore <= 0.9 &&
+      overAllScore <= 0.99 &&
       overAllScoreLabel === "Negative"
     ) {
       finalScore = Math.abs(overAllScore) * 2;
@@ -59,7 +59,7 @@ const TodayReport = () => {
       finalLabelColor = "#e74c3c";
     } else if (
       overAllScore >= 0.01 &&
-      overAllScore <= 0.5 &&
+      overAllScore <= 0.59 &&
       overAllScoreLabel === "Positive"
     ) {
       finalScore = Math.abs(overAllScore) * 2 + 3;
@@ -67,7 +67,7 @@ const TodayReport = () => {
       finalLabelColor = "#f1c40f";
     } else if (
       overAllScore >= 0.06 &&
-      overAllScore <= 0.9 &&
+      overAllScore <= 0.99 &&
       overAllScoreLabel === "Positive"
     ) {
       finalScore = Math.abs(overAllScore) * 2 + 3;
@@ -78,73 +78,18 @@ const TodayReport = () => {
       finalLabelColor = "#f39c12";
       finalLabel = "Neutral";
     }
-
-    // Get the last item in the array of objects (recent tweets)
-    const recentTweetsKey = Object.keys(todayTweets.results)[
-      Object.keys(todayTweets.results).length - 1
-    ];
-    const emotions = todayTweets.overAllEmotions;
-    const results = todayTweets.overAllResults;
-
-    //Horizontal Chart Chart Data
-    const totalTweetCount = todayTweets.totalTweetCount;
-
-    const data = {
-      labels: ["Sadness", "Joy", "Fear", "Anger", "Disgust"],
-      datasets: [
-        {
-          label: "Emotions",
-          backgroundColor: "rgba(255,99,132,0.2)",
-          borderColor: "rgba(255,99,132,1)",
-          borderWidth: 1,
-          hoverBackgroundColor: "rgba(255,99,132,0.4)",
-          hoverBorderColor: "rgba(255,99,132,1)",
-          data: [
-            (emotions.sadness * 100).toFixed(0),
-            (emotions.joy * 100).toFixed(0),
-            (emotions.fear * 100).toFixed(0),
-            (emotions.anger * 100).toFixed(0),
-            (emotions.disgust * 100).toFixed(0),
-          ],
-        },
-      ],
-    };
-
-    const randomColors = [
-      {
-        backgroundColor: "rgba(44, 62, 80,0.2)",
-        borderColor: "rgb(52, 73, 94)",
-        pointBackgroundColor: "rgb(52, 73, 94)",
-        pointHoverBorderColor: "rgba(179,181,198,1)",
-      },
-      {
-        backgroundColor: "rgba(255,99,132,0.2)",
-        borderColor: "rgba(255,99,132,1)",
-        pointBackgroundColor: "rgba(255,99,132,1)",
-        pointBorderColor: "#fff",
-        pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgba(255,99,132,1)",
-      },
-      {
-        backgroundColor: "rgba(41, 128, 185,0.2)",
-        borderColor: "rgb(52, 152, 219)",
-        pointBackgroundColor: "rgb(52, 152, 219)",
-        pointBorderColor: "#fff",
-        pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgba(255,99,132,1)",
-      },
-    ];
   }
 
   const setBarChartData = () => {
     var barChartData = [];
     // Prepare data for bar chart
-    var newData = todayTweets.results["0-8"];
-    var emotions = newData[0].emotion.document.emotion;
-    Object.keys(emotions).map((eachEmotionKey) => {
+
+    Object.keys(todayTweets.overAllEmotions).map((eachEmotionKey) => {
       var subData = {};
       subData.id = eachEmotionKey;
-      subData[eachEmotionKey] = (emotions[eachEmotionKey] * 100).toFixed(0);
+      subData[eachEmotionKey] = (
+        todayTweets.overAllEmotions[eachEmotionKey] * 100
+      ).toFixed(0);
       var colorKey = eachEmotionKey.toString() + "Color";
       subData[colorKey] = "hsl(42, 70%, 50%)";
 
@@ -423,7 +368,7 @@ const TodayReport = () => {
                   >
                     hh
                   </span>
-                  No Positve and Negative
+                  No Negativity
                 </p>
                 <p className="legend-text">
                   <span
@@ -617,6 +562,81 @@ const TodayReport = () => {
                     },
                   ]}
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mentions and some tweets */}
+        <div className="grid-container">
+          <div className="grid-item">
+            <div className="card">
+              <div className="card-header">
+                <p>Top Mentions</p>
+              </div>
+              <div className="card-content">
+                <table>
+                  <tr>
+                    <td>Username</td>
+                    <td>No of mentions</td>
+                  </tr>
+                  {Object.keys(todayTweets.mentions)
+                    .slice(0, 5)
+                    .map((row, index) => {
+                      return (
+                        <tr>
+                          <td>{row}</td>
+                          <td>{todayTweets.mentions[row]}</td>
+                        </tr>
+                      );
+                    })}
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="grid-item">
+            <div className="card">
+              <div className="card-header">
+                <p>Recent Tweets</p>
+              </div>
+              <div className="card-content">
+                <table>
+                  <tr>
+                    <td>Username</td>
+                    <td>Tweet Text</td>
+                    <td>Followers Count</td>
+                    <td>Sentiment</td>
+                  </tr>
+                  {todayTweets.results["0-8"].slice(3, 8).map((row, index) => {
+                    return (
+                      <tr>
+                        <td>{row.screenName}</td>
+                        <td title={row.text}>
+                          {row.text.substring(0, 20) + "..."}
+                        </td>
+                        <td>{row.followersCount}</td>
+                        <td>
+                          {row.prediction === "Positive" ? (
+                            <FontAwesomeIcon
+                              icon={faSmile}
+                              style={{ color: "#229E76" }}
+                            />
+                          ) : row.prediction === "Negative" ? (
+                            <FontAwesomeIcon
+                              icon={faSadCry}
+                              style={{ color: "#e74c3c" }}
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faSmileWink}
+                              style={{ color: "#f39c12" }}
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </table>
               </div>
             </div>
           </div>
