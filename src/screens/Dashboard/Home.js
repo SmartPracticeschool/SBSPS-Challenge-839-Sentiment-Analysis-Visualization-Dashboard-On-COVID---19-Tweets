@@ -9,7 +9,11 @@ import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { Overview, TodayReport } from "./Tabs";
 
 // actions
-import { getThisMonthTweets, getTweetsByMonth } from "./../../actions/actions";
+import {
+  getThisMonthTweets,
+  getTweetsByMonth,
+  getTodayTweets,
+} from "./../../actions/actions";
 
 // Context
 import { Context } from "../../context/Context";
@@ -19,6 +23,8 @@ const Home = () => {
     thisMonthTweets,
     setThisMonthTweets,
     setThisMonthTweetsCollection,
+    setTodayTweets,
+    todayTweets,
   } = useContext(Context);
 
   useEffect(() => {
@@ -29,9 +35,16 @@ const Home = () => {
     getTweetsByMonth("2020-06-05").then((res) => {
       setThisMonthTweetsCollection(res.data);
     });
+
+    getTodayTweets("2020-06-05").then((res) => {
+      setTodayTweets(res.data);
+    });
   }, []);
 
-  if (thisMonthTweets.weeklyData !== undefined) {
+  if (
+    thisMonthTweets.weeklyData !== undefined &&
+    todayTweets.results !== undefined
+  ) {
     return (
       <div className="main">
         {/* <Overview /> */}

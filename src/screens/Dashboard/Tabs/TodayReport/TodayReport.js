@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 
 // Stylesheet
 import "./TodayReport.css";
@@ -10,6 +10,9 @@ import ReactSpeedometer from "react-d3-speedometer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSmileWink,
+  faSadTear,
+  faSmile,
+  faMeh,
   faKiwiBird,
   faUserAlt,
   faHashtag,
@@ -18,85 +21,141 @@ import {
 
 // Charts
 import { ResponsiveBar } from "@nivo/bar";
+import HeatMap from "./components/HeatMap";
+
+// Context
+import { Context } from "../../../../context/Context";
 
 const TodayReport = () => {
-  const [data, setData] = useState([
-    {
-      country: "AD",
-      "hot dog": 104,
-      "hot dogColor": "hsl(142, 70%, 50%)",
-      burger: 193,
-      burgerColor: "hsl(69, 70%, 50%)",
-      sandwich: 64,
-      sandwichColor: "hsl(236, 70%, 50%)",
-      kebab: 134,
-      kebabColor: "hsl(187, 70%, 50%)",
-      fries: 109,
-      friesColor: "hsl(312, 70%, 50%)",
-      donut: 191,
-      donutColor: "hsl(115, 70%, 50%)",
-    },
-    {
-      country: "AE",
-      "hot dog": 101,
-      "hot dogColor": "hsl(146, 70%, 50%)",
-      burger: 153,
-      burgerColor: "hsl(346, 70%, 50%)",
-      sandwich: 44,
-      sandwichColor: "hsl(47, 70%, 50%)",
-      kebab: 88,
-      kebabColor: "hsl(78, 70%, 50%)",
-      fries: 4,
-      friesColor: "hsl(137, 70%, 50%)",
-      donut: 156,
-      donutColor: "hsl(137, 70%, 50%)",
-    },
-    {
-      country: "AF",
-      "hot dog": 121,
-      "hot dogColor": "hsl(122, 70%, 50%)",
-      burger: 82,
-      burgerColor: "hsl(124, 70%, 50%)",
-      sandwich: 122,
-      sandwichColor: "hsl(251, 70%, 50%)",
-      kebab: 166,
-      kebabColor: "hsl(159, 70%, 50%)",
-      fries: 157,
-      friesColor: "hsl(208, 70%, 50%)",
-      donut: 49,
-      donutColor: "hsl(319, 70%, 50%)",
-    },
-    {
-      country: "AG",
-      "hot dog": 118,
-      "hot dogColor": "hsl(266, 70%, 50%)",
-      burger: 106,
-      burgerColor: "hsl(226, 70%, 50%)",
-      sandwich: 66,
-      sandwichColor: "hsl(330, 70%, 50%)",
-      kebab: 188,
-      kebabColor: "hsl(249, 70%, 50%)",
-      fries: 179,
-      friesColor: "hsl(250, 70%, 50%)",
-      donut: 21,
-      donutColor: "hsl(130, 70%, 50%)",
-    },
-    {
-      country: "AI",
-      "hot dog": 199,
-      "hot dogColor": "hsl(318, 70%, 50%)",
-      burger: 193,
-      burgerColor: "hsl(320, 70%, 50%)",
-      sandwich: 182,
-      sandwichColor: "hsl(277, 70%, 50%)",
-      kebab: 62,
-      kebabColor: "hsl(109, 70%, 50%)",
-      fries: 5,
-      friesColor: "hsl(114, 70%, 50%)",
-      donut: 122,
-      donutColor: "hsl(279, 70%, 50%)",
-    },
-  ]);
+  const { todayTweets } = useContext(Context);
+  const [data, setData] = useState();
+
+  if (todayTweets.results !== undefined) {
+    // Overall score calculation (out of 5)
+    var overAllScore = Math.abs(todayTweets.overAllSentimentScore);
+    var overAllScoreLabel = todayTweets.overAllSentimentLabel;
+
+    var finalScore;
+    var finalLabel;
+    var finalLabelColor;
+
+    if (
+      overAllScore >= 0.01 &&
+      overAllScore <= 0.5 &&
+      overAllScoreLabel === "Negative"
+    ) {
+      finalScore = Math.abs(overAllScore) * 2;
+      finalLabel = "Negative";
+      finalLabelColor = "#c0392b";
+    } else if (
+      overAllScore >= 0.06 &&
+      overAllScore <= 0.9 &&
+      overAllScoreLabel === "Negative"
+    ) {
+      finalScore = Math.abs(overAllScore) * 2;
+      finalLabel = "Negative";
+      finalLabelColor = "#e74c3c";
+    } else if (
+      overAllScore >= 0.01 &&
+      overAllScore <= 0.5 &&
+      overAllScoreLabel === "Positive"
+    ) {
+      finalScore = Math.abs(overAllScore) * 2 + 3;
+      finalLabel = "Positive";
+      finalLabelColor = "#f1c40f";
+    } else if (
+      overAllScore >= 0.06 &&
+      overAllScore <= 0.9 &&
+      overAllScoreLabel === "Positive"
+    ) {
+      finalScore = Math.abs(overAllScore) * 2 + 3;
+      finalLabel = "Positive";
+      finalLabelColor = "#3498db";
+    } else if (overAllScore === 0.0) {
+      finalScore = Math.random(0, 0.6) + 2;
+      finalLabelColor = "#f39c12";
+      finalLabel = "Neutral";
+    }
+
+    // Get the last item in the array of objects (recent tweets)
+    const recentTweetsKey = Object.keys(todayTweets.results)[
+      Object.keys(todayTweets.results).length - 1
+    ];
+    const emotions = todayTweets.overAllEmotions;
+    const results = todayTweets.overAllResults;
+
+    //Horizontal Chart Chart Data
+    const totalTweetCount = todayTweets.totalTweetCount;
+
+    const data = {
+      labels: ["Sadness", "Joy", "Fear", "Anger", "Disgust"],
+      datasets: [
+        {
+          label: "Emotions",
+          backgroundColor: "rgba(255,99,132,0.2)",
+          borderColor: "rgba(255,99,132,1)",
+          borderWidth: 1,
+          hoverBackgroundColor: "rgba(255,99,132,0.4)",
+          hoverBorderColor: "rgba(255,99,132,1)",
+          data: [
+            (emotions.sadness * 100).toFixed(0),
+            (emotions.joy * 100).toFixed(0),
+            (emotions.fear * 100).toFixed(0),
+            (emotions.anger * 100).toFixed(0),
+            (emotions.disgust * 100).toFixed(0),
+          ],
+        },
+      ],
+    };
+
+    const randomColors = [
+      {
+        backgroundColor: "rgba(44, 62, 80,0.2)",
+        borderColor: "rgb(52, 73, 94)",
+        pointBackgroundColor: "rgb(52, 73, 94)",
+        pointHoverBorderColor: "rgba(179,181,198,1)",
+      },
+      {
+        backgroundColor: "rgba(255,99,132,0.2)",
+        borderColor: "rgba(255,99,132,1)",
+        pointBackgroundColor: "rgba(255,99,132,1)",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgba(255,99,132,1)",
+      },
+      {
+        backgroundColor: "rgba(41, 128, 185,0.2)",
+        borderColor: "rgb(52, 152, 219)",
+        pointBackgroundColor: "rgb(52, 152, 219)",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgba(255,99,132,1)",
+      },
+    ];
+  }
+
+  const setBarChartData = () => {
+    var barChartData = [];
+    // Prepare data for bar chart
+    var newData = todayTweets.results["0-8"];
+    var emotions = newData[0].emotion.document.emotion;
+    Object.keys(emotions).map((eachEmotionKey) => {
+      var subData = {};
+      subData.id = eachEmotionKey;
+      subData[eachEmotionKey] = (emotions[eachEmotionKey] * 100).toFixed(0);
+      var colorKey = eachEmotionKey.toString() + "Color";
+      subData[colorKey] = "hsl(42, 70%, 50%)";
+
+      barChartData.push(subData);
+    });
+    setData(barChartData);
+  };
+
+  useEffect(() => {
+    setBarChartData();
+  }, []);
+
+  console.log(todayTweets.overAllSentimentScore);
   return (
     <div style={{ marginTop: -18 }}>
       <div className="title-header">
@@ -118,7 +177,7 @@ const TodayReport = () => {
                       width={250}
                       height={160}
                       needleHeightRatio={0.8}
-                      value={2 * 200}
+                      value={finalScore * 200}
                       segmentColors={[
                         "#c0392b",
                         "#e74c3c",
@@ -159,15 +218,23 @@ const TodayReport = () => {
                   <div className="grid-item">
                     <div className="score" style={{ marginRight: 20 }}>
                       <p className="overall-score">
-                        <FontAwesomeIcon
-                          icon={faSmileWink}
-                          style={{ marginRight: 10 }}
-                        />
-                        4.5
+                        {finalLabel === "Positive" ? (
+                          <FontAwesomeIcon icon={faSmile} className="icon" />
+                        ) : finalLabel === "Negative" ? (
+                          <FontAwesomeIcon icon={faSadTear} className="icon" />
+                        ) : (
+                          <FontAwesomeIcon icon={faMeh} className="icon" />
+                        )}
+                        {finalScore.toFixed(2)}
                       </p>
                       <p className="out-of-text">out of 5 </p>
 
-                      <p className="overall-sentiment">Positive</p>
+                      <p
+                        className="overall-sentiment"
+                        style={{ color: finalLabelColor }}
+                      >
+                        {finalLabel}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -191,21 +258,25 @@ const TodayReport = () => {
                       <FontAwesomeIcon icon={faRetweet} className="icon" />
                       No. Tweets
                     </div>
-                    <div className="small-bold">3000</div>
+                    <div className="small-bold">
+                      {todayTweets.totalTweetCount}
+                    </div>
                   </div>
                   <div className="grid-item">
                     <div className="small-title">
                       <FontAwesomeIcon icon={faHashtag} className="icon" />
                       No. Hashtags
                     </div>
-                    <div className="small-bold">3000</div>
+                    <div className="small-bold">
+                      {Object.keys(todayTweets.hashtags).length}
+                    </div>
                   </div>
                   <div className="grid-item">
                     <div className="small-title">
                       <FontAwesomeIcon icon={faUserAlt} className="icon" />
                       No. Users
                     </div>
-                    <div className="small-bold">3000</div>
+                    <div className="small-bold">1300</div>
                   </div>
                 </div>
               </div>
@@ -219,18 +290,11 @@ const TodayReport = () => {
               <div className="card-content" style={{ height: 300 }}>
                 <ResponsiveBar
                   data={data}
-                  keys={[
-                    "hot dog",
-                    "burger",
-                    "sandwich",
-                    "kebab",
-                    "fries",
-                    "donut",
-                  ]}
-                  indexBy="country"
+                  keys={["sadness", "anger", "joy", "fear", "disgust"]}
+                  indexBy="id"
                   margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
                   padding={0.3}
-                  colors={{ scheme: "nivo" }}
+                  colors={{ scheme: "dark2" }}
                   defs={[
                     {
                       id: "dots",
@@ -251,20 +315,6 @@ const TodayReport = () => {
                       spacing: 10,
                     },
                   ]}
-                  fill={[
-                    {
-                      match: {
-                        id: "fries",
-                      },
-                      id: "dots",
-                    },
-                    {
-                      match: {
-                        id: "sandwich",
-                      },
-                      id: "lines",
-                    },
-                  ]}
                   borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
                   axisTop={null}
                   axisRight={null}
@@ -272,7 +322,7 @@ const TodayReport = () => {
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: "country",
+                    legend: "Emotions",
                     legendPosition: "middle",
                     legendOffset: 32,
                   }}
@@ -280,7 +330,7 @@ const TodayReport = () => {
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: "food",
+                    legend: "Emotion Level",
                     legendPosition: "middle",
                     legendOffset: -40,
                   }}
@@ -318,6 +368,70 @@ const TodayReport = () => {
                   motionStiffness={90}
                   motionDamping={15}
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Map */}
+        <div className="grid-container">
+          <div className="grid-item" style={{ width: 900, marginTop: 30 }}>
+            <div className="card">
+              <div
+                className="card-header"
+                style={{ paddingTop: 15, paddingBottom: 15 }}
+              >
+                Choropleth Map ( Heat Map )
+              </div>
+              <div className="card-content">
+                <HeatMap />
+              </div>
+            </div>
+          </div>
+          <div className="grid-item" style={{ marginTop: 30 }}>
+            <div className="card">
+              {/* <div
+                className="card-header"
+                style={{ paddingTop: 15, paddingBottom: 15 }}
+              >
+                helo
+              </div> */}
+              <div className="card-content">
+                <p className="legend-text">
+                  <span
+                    className="color-box"
+                    style={{ color: "#cccccc", backgroundColor: "#cccccc" }}
+                  >
+                    hh
+                  </span>
+                  No Positve and Negative
+                </p>
+                <p className="legend-text">
+                  <span
+                    className="color-box"
+                    style={{ color: "#be3d26", backgroundColor: "#be3d26" }}
+                  >
+                    hh
+                  </span>
+                  Less Negativity
+                </p>
+                <p className="legend-text">
+                  <span
+                    className="color-box"
+                    style={{ color: "#9a301f", backgroundColor: "#9a301f" }}
+                  >
+                    hh
+                  </span>
+                  Moderate Negativity
+                </p>
+                <p className="legend-text">
+                  <span
+                    className="color-box"
+                    style={{ color: "#772617", backgroundColor: "#772617" }}
+                  >
+                    hh
+                  </span>
+                  High Negativity
+                </p>
               </div>
             </div>
           </div>
