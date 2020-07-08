@@ -35,6 +35,9 @@ import string
 from bson import json_util
 from collections import Counter
 
+# Socket IO
+from flask_socketio import SocketIO, emit,send
+
 # BS4
 from urllib.request import Request, urlopen
 
@@ -70,6 +73,7 @@ tone_analyzer.set_service_url(os.getenv("TONE_ANALYZER_URL"))
 natural_language_understanding.set_service_url(os.getenv("NLU_URL"))
 
 app=Flask(__name__,  static_folder='build/')
+socketio = SocketIO(app,  cors_allowed_origins="*")
 
 # MongoDB Connection
 app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
@@ -92,12 +96,11 @@ currentDate = str(datetime.datetime.now()).split(" ")[0]
 
 # Dev
 
-startTimeStampHour  = 8
-currentTimeStampHour = 16
+startTimeStampHour  = 16
+currentTimeStampHour = 23
 startTimeStampDay = 8
 
 # limit = random.randrange(600,650)
-
 
 
 
@@ -142,6 +145,8 @@ def Merge(dict1, dict2):
     res = Counter(dict1) + Counter(dict2)
     return res
 
+#model
+modal = joblib.load('model.pkl') 
 
 # if currentTimeStampHour < 8:
 #     startTimeStampHour = 0
@@ -150,8 +155,66 @@ def Merge(dict1, dict2):
 #     startTimeStampHour = currentTimeStampHour - 8
 #     startTimeStampDay = currentTimeStamp.day 
 
+# Live streamListener class
+class StreamListener(tweepy.StreamListener):
+    def on_status(self, status):
+
+        
+        # print(status.id_str)
+        # if "retweeted_status" attribute exists, flag this tweet as a retweet.
+        is_retweet = hasattr(status, "retweeted_status")
+        # check if text has been truncated
+        if hasattr(status,"extended_tweet"):
+            text = status.extended_tweet["full_text"]
+        else:
+            text = status.text
+        # check if this is a quote tweet.
+        is_quote = hasattr(status, "quoted_status")
+        quoted_text = ""
+        if is_quote:
+            # check if quoted tweet's text has been truncated before recording it
+            if hasattr(status.quoted_status,"extended_tweet"):
+                quoted_text = status.quoted_status.extended_tweet["full_text"]
+            else:
+                quoted_text = status.quoted_status.text
+        # remove characters that might cause problems with csv encoding
+        remove_characters = [",","\n"]
+        for c in remove_characters:
+            text.replace(c," ")
+            quoted_text.replace(c, " ")
+        
+        # classify using model
+        customTokens = removeNoise(word_tokenize(quoted_text))
+        prediction = modal.classify(dict([token, True] for token in customTokens))
+        result = {}
+        result["createdAt"] = str(status.created_at)
+        result["screenName"] = status.user.screen_name
+        result["isRetweet"] = is_retweet
+        result["text"] = text
+        result["quotedText"] = quoted_text
+        result["score"] = random.randrange(2,9)
+        result["prediction"] = prediction
+        send(result)
+        print("New tweet sent")
+        # print(status.created_at,status.user.screen_name,is_retweet,is_quote,text,quoted_text)
+        # with open("out.csv", "a", encoding='utf-8') as f:
+            # f.wrsite("%s,%s,%s,%s,%s,%s\n" % (status.created_at,status.user.screen_name,is_retweet,is_quote,text,quoted_text))
+    def on_error(self, status_code):
+        print("Encountered streaming error (", status_code, ")")
 
 ############### ROUTES ################
+#get live stream tweets
+@socketio.on('message', namespace='/liveStream')
+def getLiveStream(msg):
+    # Stream Listener
+    streamListener = StreamListener()
+    stream = tweepy.Stream(auth=auth_api.auth, listener=streamListener,tweet_mode='extended')
+    with open("out.csv", "w", encoding='utf-8') as f:
+        f.write("date,user,is_retweet,is_quote,text,quoted_text\n")
+    tags = ["lockdown","covid-19","pandemic"]
+    stream.filter(track=tags)    
+
+
 # Collect tweets from a hashtag
 @app.route('/api/test', methods=['GET'])
 def test():
@@ -178,9 +241,6 @@ def getTweets():
     # Dev   
     startTime = datetime.datetime(2020, 7, 8,0, 0 ,0)
     endTime = datetime.datetime(2020, 7, 8, 23, 0 ,0)
-
-    # Custom Modal to predict the sentiment of each text
-    modal = joblib.load('model.pkl')
 
     # startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
     # endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
@@ -885,4 +945,5 @@ def serve(path):
 
 
 if __name__ == '__main__':
+    socketio.run(app)
     app.run(use_reloader=True, port=5000, threaded=True)
