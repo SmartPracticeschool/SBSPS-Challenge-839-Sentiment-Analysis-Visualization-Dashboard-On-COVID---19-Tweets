@@ -6,7 +6,7 @@ import "./Home.css";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 // Tabs
-import { Overview, TodayReport, History } from "./Tabs";
+import { Overview, TodayReport, History, LiveStream } from "./Tabs";
 
 // actions
 import {
@@ -47,7 +47,8 @@ const Home = () => {
   var mapping = {
     TodayReport: TodayReport,
     Overview: Overview,
-    History: History
+    History: History,
+    LiveStream: LiveStream
   };
 
   var Component = mapping[selectedComponent];
