@@ -6,6 +6,9 @@ import "./TodayReport.css";
 // Speedometer
 import ReactSpeedometer from "react-d3-speedometer";
 
+// Radar chart
+import { Radar } from "react-chartjs-2";
+
 // FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -31,12 +34,12 @@ const TodayReport = () => {
   const { todayTweets } = useContext(Context);
   const [data, setData] = useState();
   const [pieChartData, setPieChartData] = useState([]);
+  const [radarData, setRadarData] = useState({});
 
   if (todayTweets.results !== undefined) {
     // Overall score calculation (out of 5)
     var overAllScore = Math.abs(todayTweets.overAllSentimentScore);
     var overAllScoreLabel = todayTweets.overAllSentimentLabel;
-    console.log(todayTweets.overAllSentimentScore);
     var finalScore;
     var finalLabel;
     var finalLabelColor;
@@ -80,6 +83,62 @@ const TodayReport = () => {
     }
   }
 
+  const prepareRadarData = () => {
+    const randomColors = [
+      {
+        backgroundColor: "rgba(44, 62, 80,0.2)",
+        borderColor: "rgb(52, 73, 94)",
+        pointBackgroundColor: "rgb(52, 73, 94)",
+        pointHoverBorderColor: "rgba(179,181,198,1)",
+      },
+      {
+        backgroundColor: "rgba(255,99,132,0.2)",
+        borderColor: "rgba(255,99,132,1)",
+        pointBackgroundColor: "rgba(255,99,132,1)",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgba(255,99,132,1)",
+      },
+      {
+        backgroundColor: "rgba(41, 128, 185,0.2)",
+        borderColor: "rgb(52, 152, 219)",
+        pointBackgroundColor: "rgb(52, 152, 219)",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgba(255,99,132,1)",
+      },
+    ];
+    var dataset = [];
+    {
+      Object.keys(todayTweets.results).map((key, index) => {
+        var data = todayTweets.results[key];
+        var result = {};
+        var emotions = data[0].emotion.document.emotion;
+        result["label"] = key;
+        result["backgroundColor"] = randomColors[index].backgroundColor;
+        result["borderColor"] = randomColors[index].borderColor;
+        result["pointBackgroundColor"] =
+          randomColors[index].pointBackgroundColor;
+        result["pointBorderColor"] = "#fff";
+        result["pointHoverBackgroundColor"] = "#fff";
+        result["pointHoverBorderColor"] =
+          randomColors[index].pointHoverBackgroundColor;
+        result["data"] = [
+          (emotions.sadness * 100).toFixed(0),
+          (emotions.joy * 100).toFixed(0),
+          (emotions.fear * 100).toFixed(0),
+          (emotions.anger * 100).toFixed(0),
+          (emotions.disgust * 100).toFixed(0),
+        ];
+        dataset.push(result);
+      });
+      var overallData = {
+        labels: ["Sadness", "Joy", "Fear", "Disgust", "Anger"],
+        datasets: dataset,
+      };
+      setRadarData(overallData);
+    }
+  };
   const setBarChartData = () => {
     var barChartData = [];
     // Prepare data for bar chart
@@ -118,9 +177,9 @@ const TodayReport = () => {
   useEffect(() => {
     setBarChartData();
     setPieChart();
+    prepareRadarData();
   }, []);
 
-  console.log(todayTweets.overAllSentimentScore);
   return (
     <div style={{ marginTop: -18 }}>
       <div className="title-header">
@@ -637,6 +696,23 @@ const TodayReport = () => {
                     );
                   })}
                 </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Radar chart */}
+        <div
+          className="grid-container"
+          style={{ marginTop: 30, marginBottom: 30 }}
+        >
+          <div className="grid-item">
+            <div className="card">
+              <div className="card-header">
+                <p>Comparison Between Time Intervals ( Radar Chart )</p>
+              </div>
+              <div className="card-content">
+                <Radar data={radarData} />
               </div>
             </div>
           </div>

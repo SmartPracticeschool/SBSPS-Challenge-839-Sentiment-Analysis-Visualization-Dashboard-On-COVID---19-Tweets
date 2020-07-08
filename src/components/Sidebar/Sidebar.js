@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 // stylesheet
 import "./Sidebar.css";
@@ -14,14 +14,20 @@ import {
   faThLarge,
 } from "@fortawesome/free-solid-svg-icons";
 
+// Context
+import { Context } from "../../context/Context";
+
 const Sidebar = () => {
+  const { setSelectedComponent } = useContext(Context);
   const [options, setOptions] = useState([
     {
       name: "Overview",
+      key: "Overview",
       iconName: faThLarge,
     },
     {
       name: "Today Report",
+      key: "TodayReport",
       iconName: faChartLine,
     },
     {
@@ -47,7 +53,11 @@ const Sidebar = () => {
         <div className="sidebar-menu">
           {options.map((option, index) => {
             return (
-              <div className="menu-title" key={index}>
+              <div
+                className="menu-title"
+                key={index}
+                onClick={() => setSelectedComponent(option.key)}
+              >
                 <span className="menu-item">
                   <FontAwesomeIcon icon={option.iconName} className="icon" />
                   {option.name}

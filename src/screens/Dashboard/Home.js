@@ -25,6 +25,7 @@ const Home = () => {
     setThisMonthTweetsCollection,
     setTodayTweets,
     todayTweets,
+    selectedComponent,
   } = useContext(Context);
 
   useEffect(() => {
@@ -42,6 +43,13 @@ const Home = () => {
     });
   }, []);
 
+  // Components mapping
+  var mapping = {
+    TodayReport: TodayReport,
+    Overview: Overview,
+  };
+
+  var Component = mapping[selectedComponent];
   if (
     thisMonthTweets.weeklyData !== undefined &&
     todayTweets.results !== undefined
@@ -49,7 +57,8 @@ const Home = () => {
     return (
       <div className="main">
         {/* <Overview /> */}
-        <TodayReport />
+        {/* <TodayReport /> */}
+        <Component />
       </div>
     );
   } else {
