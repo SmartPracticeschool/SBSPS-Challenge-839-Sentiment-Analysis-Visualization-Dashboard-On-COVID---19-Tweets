@@ -258,7 +258,7 @@ const Overview = () => {
           />
 
           <div className="grid-container-4">
-            {Object.keys(thisMonthTweets.mentions)
+            {Object.keys(thisMonthTweets.hashtags)
               .slice(0, 3)
               .map((key) => {
                 return (
@@ -267,7 +267,7 @@ const Overview = () => {
                       <span className="sub-stats-bold" title={"@" + key}>
                         {"@" + key.substring(0, 4) + ".."}
                       </span>{" "}
-                      <br /> <small>{thisMonthTweets.mentions[key]}</small>
+                      <br /> <small>{thisMonthTweets.hashtags[key]}</small>
                     </p>
                   </div>
                 );
@@ -368,7 +368,6 @@ const Overview = () => {
             <tr>
               <th>Username</th>
               <th>Tweet</th>
-              <th>Likes</th>
               <th>Followers</th>
               <th>Sentiment</th>
             </tr>
@@ -377,7 +376,6 @@ const Overview = () => {
                 <tr>
                   <td>{tweet.screenName}</td>
                   <td>{tweet.text}</td>
-                  <td>{tweet.favouriteCount}</td>
                   <td>{tweet.followersCount}</td>
                   <td>
                     {tweet.prediction === "Positive" ? (

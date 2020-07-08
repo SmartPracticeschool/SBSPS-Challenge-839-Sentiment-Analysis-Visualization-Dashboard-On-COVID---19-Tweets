@@ -11,6 +11,10 @@
   font-family: openSansSemiBold;
   src: url('./assets/Open_Sans/OpenSans-SemiBold.ttf');
 }
+@font-face {
+  font-family: openSansBold;
+  src: url('./assets/Open_Sans/OpenSans-Bold.ttf');
+}
 
 body{
   margin: 0;

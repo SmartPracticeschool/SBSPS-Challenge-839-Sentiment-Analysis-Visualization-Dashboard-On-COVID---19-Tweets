@@ -6,7 +6,7 @@ import "./Home.css";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 // Tabs
-import { Overview } from "./Tabs";
+import { Overview, TodayReport } from "./Tabs";
 
 // actions
 import { getThisMonthTweets, getTweetsByMonth } from "./../../actions/actions";
@@ -34,7 +34,8 @@ const Home = () => {
   if (thisMonthTweets.weeklyData !== undefined) {
     return (
       <div className="main">
-        <Overview />
+        {/* <Overview /> */}
+        <TodayReport />
       </div>
     );
   } else {
