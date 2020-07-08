@@ -22,6 +22,7 @@ import {
 // Charts
 import { ResponsiveBar } from "@nivo/bar";
 import HeatMap from "./components/HeatMap";
+import { ResponsivePie } from "@nivo/pie";
 
 // Context
 import { Context } from "../../../../context/Context";
@@ -29,6 +30,7 @@ import { Context } from "../../../../context/Context";
 const TodayReport = () => {
   const { todayTweets } = useContext(Context);
   const [data, setData] = useState();
+  const [pieChartData, setPieChartData] = useState([]);
 
   if (todayTweets.results !== undefined) {
     // Overall score calculation (out of 5)
@@ -151,8 +153,26 @@ const TodayReport = () => {
     setData(barChartData);
   };
 
+  const setPieChart = () => {
+    var overallData = [];
+    Object.keys(todayTweets.topInfluencers)
+      .slice(0, 5)
+      .map((user) => {
+        var subData = {};
+        subData.id = user;
+        subData.label = user;
+        subData.value = (
+          todayTweets.topInfluencers[user].favouriteCount /
+          todayTweets.topInfluencers[user].tweetCount
+        ).toFixed(2);
+        overallData.push(subData);
+      });
+    setPieChartData(overallData);
+  };
+
   useEffect(() => {
     setBarChartData();
+    setPieChart();
   }, []);
 
   console.log(todayTweets.overAllSentimentScore);
@@ -432,6 +452,171 @@ const TodayReport = () => {
                   </span>
                   High Negativity
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Top Influencers */}
+        <div
+          className="grid-container"
+          style={{ marginTop: 20, marginBottom: 20 }}
+        >
+          <div className="grid-item">
+            <div className="card">
+              <div className="card-header">
+                <p>Top Influencers</p>
+              </div>
+              <div className="card-content" style={{ paddingTop: 20 }}>
+                <table>
+                  <tr>
+                    <td>Username</td>
+                    <td>No of Tweets</td>
+                    <td>No of Likes</td>
+                    <td>No of followers</td>
+                  </tr>
+                  {Object.keys(todayTweets.topInfluencers)
+                    .slice(0, 7)
+                    .map((row, index) => {
+                      return (
+                        <tr>
+                          <td>{row}</td>
+                          <td>{todayTweets.topInfluencers[row].tweetCount}</td>
+                          <td>
+                            {todayTweets.topInfluencers[row].favouriteCount}
+                          </td>
+                          <td>
+                            {todayTweets.topInfluencers[row].followersCount}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="grid-item">
+            <div className="card">
+              <div
+                className="card-header"
+                style={{ paddingTop: 15, paddingBottom: 15 }}
+              >
+                Most Likely Ratio
+              </div>
+              <div className="card-content" style={{ height: 300 }}>
+                <ResponsivePie
+                  data={pieChartData}
+                  margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+                  innerRadius={0.5}
+                  padAngle={0.7}
+                  cornerRadius={3}
+                  colors={{ scheme: "nivo" }}
+                  borderWidth={1}
+                  borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+                  radialLabelsSkipAngle={10}
+                  radialLabelsTextXOffset={6}
+                  radialLabelsTextColor="#333333"
+                  radialLabelsLinkOffset={0}
+                  radialLabelsLinkDiagonalLength={16}
+                  radialLabelsLinkHorizontalLength={24}
+                  radialLabelsLinkStrokeWidth={1}
+                  radialLabelsLinkColor={{ from: "color" }}
+                  slicesLabelsSkipAngle={10}
+                  slicesLabelsTextColor="#333333"
+                  animate={true}
+                  motionStiffness={90}
+                  motionDamping={15}
+                  defs={[
+                    {
+                      id: "dots",
+                      type: "patternDots",
+                      background: "inherit",
+                      color: "rgba(255, 255, 255, 0.3)",
+                      size: 4,
+                      padding: 1,
+                      stagger: true,
+                    },
+                    {
+                      id: "lines",
+                      type: "patternLines",
+                      background: "inherit",
+                      color: "rgba(255, 255, 255, 0.3)",
+                      rotation: -45,
+                      lineWidth: 6,
+                      spacing: 10,
+                    },
+                  ]}
+                  fill={[
+                    {
+                      match: {
+                        id: "ruby",
+                      },
+                      id: "dots",
+                    },
+                    {
+                      match: {
+                        id: "c",
+                      },
+                      id: "dots",
+                    },
+                    {
+                      match: {
+                        id: "go",
+                      },
+                      id: "dots",
+                    },
+                    {
+                      match: {
+                        id: "python",
+                      },
+                      id: "dots",
+                    },
+                    {
+                      match: {
+                        id: "scala",
+                      },
+                      id: "lines",
+                    },
+                    {
+                      match: {
+                        id: "lisp",
+                      },
+                      id: "lines",
+                    },
+                    {
+                      match: {
+                        id: "elixir",
+                      },
+                      id: "lines",
+                    },
+                    {
+                      match: {
+                        id: "javascript",
+                      },
+                      id: "lines",
+                    },
+                  ]}
+                  legends={[
+                    {
+                      anchor: "bottom",
+                      direction: "row",
+                      translateY: 56,
+                      itemWidth: 100,
+                      itemHeight: 18,
+                      itemTextColor: "#999",
+                      symbolSize: 18,
+                      symbolShape: "circle",
+                      effects: [
+                        {
+                          on: "hover",
+                          style: {
+                            itemTextColor: "#000",
+                          },
+                        },
+                      ],
+                    },
+                  ]}
+                />
               </div>
             </div>
           </div>
