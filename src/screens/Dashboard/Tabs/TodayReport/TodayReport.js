@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 
 // Stylesheet
 import "./TodayReport.css";
@@ -10,7 +10,10 @@ import ReactSpeedometer from "react-d3-speedometer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSmileWink,
-  faKiwiBird,
+  faSadTear,
+  faSmile,
+  faMeh,
+  faSadCry,
   faUserAlt,
   faHashtag,
   faRetweet,
@@ -18,85 +21,106 @@ import {
 
 // Charts
 import { ResponsiveBar } from "@nivo/bar";
+import HeatMap from "./components/HeatMap";
+import { ResponsivePie } from "@nivo/pie";
+
+// Context
+import { Context } from "../../../../context/Context";
 
 const TodayReport = () => {
-  const [data, setData] = useState([
-    {
-      country: "AD",
-      "hot dog": 104,
-      "hot dogColor": "hsl(142, 70%, 50%)",
-      burger: 193,
-      burgerColor: "hsl(69, 70%, 50%)",
-      sandwich: 64,
-      sandwichColor: "hsl(236, 70%, 50%)",
-      kebab: 134,
-      kebabColor: "hsl(187, 70%, 50%)",
-      fries: 109,
-      friesColor: "hsl(312, 70%, 50%)",
-      donut: 191,
-      donutColor: "hsl(115, 70%, 50%)",
-    },
-    {
-      country: "AE",
-      "hot dog": 101,
-      "hot dogColor": "hsl(146, 70%, 50%)",
-      burger: 153,
-      burgerColor: "hsl(346, 70%, 50%)",
-      sandwich: 44,
-      sandwichColor: "hsl(47, 70%, 50%)",
-      kebab: 88,
-      kebabColor: "hsl(78, 70%, 50%)",
-      fries: 4,
-      friesColor: "hsl(137, 70%, 50%)",
-      donut: 156,
-      donutColor: "hsl(137, 70%, 50%)",
-    },
-    {
-      country: "AF",
-      "hot dog": 121,
-      "hot dogColor": "hsl(122, 70%, 50%)",
-      burger: 82,
-      burgerColor: "hsl(124, 70%, 50%)",
-      sandwich: 122,
-      sandwichColor: "hsl(251, 70%, 50%)",
-      kebab: 166,
-      kebabColor: "hsl(159, 70%, 50%)",
-      fries: 157,
-      friesColor: "hsl(208, 70%, 50%)",
-      donut: 49,
-      donutColor: "hsl(319, 70%, 50%)",
-    },
-    {
-      country: "AG",
-      "hot dog": 118,
-      "hot dogColor": "hsl(266, 70%, 50%)",
-      burger: 106,
-      burgerColor: "hsl(226, 70%, 50%)",
-      sandwich: 66,
-      sandwichColor: "hsl(330, 70%, 50%)",
-      kebab: 188,
-      kebabColor: "hsl(249, 70%, 50%)",
-      fries: 179,
-      friesColor: "hsl(250, 70%, 50%)",
-      donut: 21,
-      donutColor: "hsl(130, 70%, 50%)",
-    },
-    {
-      country: "AI",
-      "hot dog": 199,
-      "hot dogColor": "hsl(318, 70%, 50%)",
-      burger: 193,
-      burgerColor: "hsl(320, 70%, 50%)",
-      sandwich: 182,
-      sandwichColor: "hsl(277, 70%, 50%)",
-      kebab: 62,
-      kebabColor: "hsl(109, 70%, 50%)",
-      fries: 5,
-      friesColor: "hsl(114, 70%, 50%)",
-      donut: 122,
-      donutColor: "hsl(279, 70%, 50%)",
-    },
-  ]);
+  const { todayTweets } = useContext(Context);
+  const [data, setData] = useState();
+  const [pieChartData, setPieChartData] = useState([]);
+
+  if (todayTweets.results !== undefined) {
+    // Overall score calculation (out of 5)
+    var overAllScore = Math.abs(todayTweets.overAllSentimentScore);
+    var overAllScoreLabel = todayTweets.overAllSentimentLabel;
+    console.log(todayTweets.overAllSentimentScore);
+    var finalScore;
+    var finalLabel;
+    var finalLabelColor;
+
+    if (
+      overAllScore >= 0.01 &&
+      overAllScore <= 0.59 &&
+      overAllScoreLabel === "Negative"
+    ) {
+      finalScore = Math.abs(overAllScore) * 2;
+      finalLabel = "Negative";
+      finalLabelColor = "#c0392b";
+    } else if (
+      overAllScore >= 0.06 &&
+      overAllScore <= 0.99 &&
+      overAllScoreLabel === "Negative"
+    ) {
+      finalScore = Math.abs(overAllScore) * 2;
+      finalLabel = "Negative";
+      finalLabelColor = "#e74c3c";
+    } else if (
+      overAllScore >= 0.01 &&
+      overAllScore <= 0.59 &&
+      overAllScoreLabel === "Positive"
+    ) {
+      finalScore = Math.abs(overAllScore) * 2 + 3;
+      finalLabel = "Positive";
+      finalLabelColor = "#f1c40f";
+    } else if (
+      overAllScore >= 0.06 &&
+      overAllScore <= 0.99 &&
+      overAllScoreLabel === "Positive"
+    ) {
+      finalScore = Math.abs(overAllScore) * 2 + 3;
+      finalLabel = "Positive";
+      finalLabelColor = "#3498db";
+    } else if (overAllScore === 0.0) {
+      finalScore = Math.random(0, 0.6) + 2;
+      finalLabelColor = "#f39c12";
+      finalLabel = "Neutral";
+    }
+  }
+
+  const setBarChartData = () => {
+    var barChartData = [];
+    // Prepare data for bar chart
+
+    Object.keys(todayTweets.overAllEmotions).map((eachEmotionKey) => {
+      var subData = {};
+      subData.id = eachEmotionKey;
+      subData[eachEmotionKey] = (
+        todayTweets.overAllEmotions[eachEmotionKey] * 100
+      ).toFixed(0);
+      var colorKey = eachEmotionKey.toString() + "Color";
+      subData[colorKey] = "hsl(42, 70%, 50%)";
+
+      barChartData.push(subData);
+    });
+    setData(barChartData);
+  };
+
+  const setPieChart = () => {
+    var overallData = [];
+    Object.keys(todayTweets.topInfluencers)
+      .slice(0, 5)
+      .map((user) => {
+        var subData = {};
+        subData.id = user;
+        subData.label = user;
+        subData.value = (
+          todayTweets.topInfluencers[user].favouriteCount /
+          todayTweets.topInfluencers[user].tweetCount
+        ).toFixed(2);
+        overallData.push(subData);
+      });
+    setPieChartData(overallData);
+  };
+
+  useEffect(() => {
+    setBarChartData();
+    setPieChart();
+  }, []);
+
+  console.log(todayTweets.overAllSentimentScore);
   return (
     <div style={{ marginTop: -18 }}>
       <div className="title-header">
@@ -118,7 +142,7 @@ const TodayReport = () => {
                       width={250}
                       height={160}
                       needleHeightRatio={0.8}
-                      value={2 * 200}
+                      value={finalScore * 200}
                       segmentColors={[
                         "#c0392b",
                         "#e74c3c",
@@ -159,15 +183,23 @@ const TodayReport = () => {
                   <div className="grid-item">
                     <div className="score" style={{ marginRight: 20 }}>
                       <p className="overall-score">
-                        <FontAwesomeIcon
-                          icon={faSmileWink}
-                          style={{ marginRight: 10 }}
-                        />
-                        4.5
+                        {finalLabel === "Positive" ? (
+                          <FontAwesomeIcon icon={faSmile} className="icon" />
+                        ) : finalLabel === "Negative" ? (
+                          <FontAwesomeIcon icon={faSadTear} className="icon" />
+                        ) : (
+                          <FontAwesomeIcon icon={faMeh} className="icon" />
+                        )}
+                        {finalScore.toFixed(2)}
                       </p>
                       <p className="out-of-text">out of 5 </p>
 
-                      <p className="overall-sentiment">Positive</p>
+                      <p
+                        className="overall-sentiment"
+                        style={{ color: finalLabelColor }}
+                      >
+                        {finalLabel}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -191,21 +223,25 @@ const TodayReport = () => {
                       <FontAwesomeIcon icon={faRetweet} className="icon" />
                       No. Tweets
                     </div>
-                    <div className="small-bold">3000</div>
+                    <div className="small-bold">
+                      {todayTweets.totalTweetCount}
+                    </div>
                   </div>
                   <div className="grid-item">
                     <div className="small-title">
                       <FontAwesomeIcon icon={faHashtag} className="icon" />
                       No. Hashtags
                     </div>
-                    <div className="small-bold">3000</div>
+                    <div className="small-bold">
+                      {Object.keys(todayTweets.hashtags).length}
+                    </div>
                   </div>
                   <div className="grid-item">
                     <div className="small-title">
                       <FontAwesomeIcon icon={faUserAlt} className="icon" />
                       No. Users
                     </div>
-                    <div className="small-bold">3000</div>
+                    <div className="small-bold">1300</div>
                   </div>
                 </div>
               </div>
@@ -219,18 +255,11 @@ const TodayReport = () => {
               <div className="card-content" style={{ height: 300 }}>
                 <ResponsiveBar
                   data={data}
-                  keys={[
-                    "hot dog",
-                    "burger",
-                    "sandwich",
-                    "kebab",
-                    "fries",
-                    "donut",
-                  ]}
-                  indexBy="country"
+                  keys={["sadness", "anger", "joy", "fear", "disgust"]}
+                  indexBy="id"
                   margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
                   padding={0.3}
-                  colors={{ scheme: "nivo" }}
+                  colors={{ scheme: "dark2" }}
                   defs={[
                     {
                       id: "dots",
@@ -251,20 +280,6 @@ const TodayReport = () => {
                       spacing: 10,
                     },
                   ]}
-                  fill={[
-                    {
-                      match: {
-                        id: "fries",
-                      },
-                      id: "dots",
-                    },
-                    {
-                      match: {
-                        id: "sandwich",
-                      },
-                      id: "lines",
-                    },
-                  ]}
                   borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
                   axisTop={null}
                   axisRight={null}
@@ -272,7 +287,7 @@ const TodayReport = () => {
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: "country",
+                    legend: "Emotions",
                     legendPosition: "middle",
                     legendOffset: 32,
                   }}
@@ -280,7 +295,7 @@ const TodayReport = () => {
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: "food",
+                    legend: "Emotion Level",
                     legendPosition: "middle",
                     legendOffset: -40,
                   }}
@@ -318,6 +333,310 @@ const TodayReport = () => {
                   motionStiffness={90}
                   motionDamping={15}
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Map */}
+        <div className="grid-container">
+          <div className="grid-item" style={{ width: 900, marginTop: 30 }}>
+            <div className="card">
+              <div
+                className="card-header"
+                style={{ paddingTop: 15, paddingBottom: 15 }}
+              >
+                Choropleth Map ( Heat Map )
+              </div>
+              <div className="card-content">
+                <HeatMap />
+              </div>
+            </div>
+          </div>
+          <div className="grid-item" style={{ marginTop: 30 }}>
+            <div className="card">
+              {/* <div
+                className="card-header"
+                style={{ paddingTop: 15, paddingBottom: 15 }}
+              >
+                helo
+              </div> */}
+              <div className="card-content">
+                <p className="legend-text">
+                  <span
+                    className="color-box"
+                    style={{ color: "#cccccc", backgroundColor: "#cccccc" }}
+                  >
+                    hh
+                  </span>
+                  No Negativity
+                </p>
+                <p className="legend-text">
+                  <span
+                    className="color-box"
+                    style={{ color: "#be3d26", backgroundColor: "#be3d26" }}
+                  >
+                    hh
+                  </span>
+                  Less Negativity
+                </p>
+                <p className="legend-text">
+                  <span
+                    className="color-box"
+                    style={{ color: "#9a301f", backgroundColor: "#9a301f" }}
+                  >
+                    hh
+                  </span>
+                  Moderate Negativity
+                </p>
+                <p className="legend-text">
+                  <span
+                    className="color-box"
+                    style={{ color: "#772617", backgroundColor: "#772617" }}
+                  >
+                    hh
+                  </span>
+                  High Negativity
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Top Influencers */}
+        <div
+          className="grid-container"
+          style={{ marginTop: 20, marginBottom: 20 }}
+        >
+          <div className="grid-item">
+            <div className="card">
+              <div className="card-header">
+                <p>Top Influencers</p>
+              </div>
+              <div className="card-content" style={{ paddingTop: 20 }}>
+                <table>
+                  <tr>
+                    <td>Username</td>
+                    <td>No of Tweets</td>
+                    <td>No of Likes</td>
+                    <td>No of followers</td>
+                  </tr>
+                  {Object.keys(todayTweets.topInfluencers)
+                    .slice(0, 7)
+                    .map((row, index) => {
+                      return (
+                        <tr>
+                          <td>{row}</td>
+                          <td>{todayTweets.topInfluencers[row].tweetCount}</td>
+                          <td>
+                            {todayTweets.topInfluencers[row].favouriteCount}
+                          </td>
+                          <td>
+                            {todayTweets.topInfluencers[row].followersCount}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="grid-item">
+            <div className="card">
+              <div
+                className="card-header"
+                style={{ paddingTop: 15, paddingBottom: 15 }}
+              >
+                Most Likely Ratio
+              </div>
+              <div className="card-content" style={{ height: 300 }}>
+                <ResponsivePie
+                  data={pieChartData}
+                  margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+                  innerRadius={0.5}
+                  padAngle={0.7}
+                  cornerRadius={3}
+                  colors={{ scheme: "nivo" }}
+                  borderWidth={1}
+                  borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+                  radialLabelsSkipAngle={10}
+                  radialLabelsTextXOffset={6}
+                  radialLabelsTextColor="#333333"
+                  radialLabelsLinkOffset={0}
+                  radialLabelsLinkDiagonalLength={16}
+                  radialLabelsLinkHorizontalLength={24}
+                  radialLabelsLinkStrokeWidth={1}
+                  radialLabelsLinkColor={{ from: "color" }}
+                  slicesLabelsSkipAngle={10}
+                  slicesLabelsTextColor="#333333"
+                  animate={true}
+                  motionStiffness={90}
+                  motionDamping={15}
+                  defs={[
+                    {
+                      id: "dots",
+                      type: "patternDots",
+                      background: "inherit",
+                      color: "rgba(255, 255, 255, 0.3)",
+                      size: 4,
+                      padding: 1,
+                      stagger: true,
+                    },
+                    {
+                      id: "lines",
+                      type: "patternLines",
+                      background: "inherit",
+                      color: "rgba(255, 255, 255, 0.3)",
+                      rotation: -45,
+                      lineWidth: 6,
+                      spacing: 10,
+                    },
+                  ]}
+                  fill={[
+                    {
+                      match: {
+                        id: "ruby",
+                      },
+                      id: "dots",
+                    },
+                    {
+                      match: {
+                        id: "c",
+                      },
+                      id: "dots",
+                    },
+                    {
+                      match: {
+                        id: "go",
+                      },
+                      id: "dots",
+                    },
+                    {
+                      match: {
+                        id: "python",
+                      },
+                      id: "dots",
+                    },
+                    {
+                      match: {
+                        id: "scala",
+                      },
+                      id: "lines",
+                    },
+                    {
+                      match: {
+                        id: "lisp",
+                      },
+                      id: "lines",
+                    },
+                    {
+                      match: {
+                        id: "elixir",
+                      },
+                      id: "lines",
+                    },
+                    {
+                      match: {
+                        id: "javascript",
+                      },
+                      id: "lines",
+                    },
+                  ]}
+                  legends={[
+                    {
+                      anchor: "bottom",
+                      direction: "row",
+                      translateY: 56,
+                      itemWidth: 100,
+                      itemHeight: 18,
+                      itemTextColor: "#999",
+                      symbolSize: 18,
+                      symbolShape: "circle",
+                      effects: [
+                        {
+                          on: "hover",
+                          style: {
+                            itemTextColor: "#000",
+                          },
+                        },
+                      ],
+                    },
+                  ]}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mentions and some tweets */}
+        <div className="grid-container">
+          <div className="grid-item">
+            <div className="card">
+              <div className="card-header">
+                <p>Top Mentions</p>
+              </div>
+              <div className="card-content">
+                <table>
+                  <tr>
+                    <td>Username</td>
+                    <td>No of mentions</td>
+                  </tr>
+                  {Object.keys(todayTweets.mentions)
+                    .slice(0, 5)
+                    .map((row, index) => {
+                      return (
+                        <tr>
+                          <td>{row}</td>
+                          <td>{todayTweets.mentions[row]}</td>
+                        </tr>
+                      );
+                    })}
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="grid-item">
+            <div className="card">
+              <div className="card-header">
+                <p>Recent Tweets</p>
+              </div>
+              <div className="card-content">
+                <table>
+                  <tr>
+                    <td>Username</td>
+                    <td>Tweet Text</td>
+                    <td>Followers Count</td>
+                    <td>Sentiment</td>
+                  </tr>
+                  {todayTweets.results["0-8"].slice(3, 8).map((row, index) => {
+                    return (
+                      <tr>
+                        <td>{row.screenName}</td>
+                        <td title={row.text}>
+                          {row.text.substring(0, 20) + "..."}
+                        </td>
+                        <td>{row.followersCount}</td>
+                        <td>
+                          {row.prediction === "Positive" ? (
+                            <FontAwesomeIcon
+                              icon={faSmile}
+                              style={{ color: "#229E76" }}
+                            />
+                          ) : row.prediction === "Negative" ? (
+                            <FontAwesomeIcon
+                              icon={faSadCry}
+                              style={{ color: "#e74c3c" }}
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faSmileWink}
+                              style={{ color: "#f39c12" }}
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </table>
               </div>
             </div>
           </div>

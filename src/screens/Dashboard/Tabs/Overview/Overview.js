@@ -375,7 +375,7 @@ const Overview = () => {
               return (
                 <tr>
                   <td>{tweet.screenName}</td>
-                  <td>{tweet.text}</td>
+                  <td title={tweet.text}>{tweet.text}</td>
                   <td>{tweet.followersCount}</td>
                   <td>
                     {tweet.prediction === "Positive" ? (

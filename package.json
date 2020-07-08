@@ -9,16 +9,21 @@
     "@nivo/bar": "^0.62.0",
     "@nivo/bump": "^0.62.0",
     "@nivo/line": "^0.62.0",
+    "@nivo/pie": "^0.62.0",
+    "@nivo/sunburst": "^0.62.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
+    "d3-scale": "^3.2.1",
     "nivo": "^0.31.0",
     "react": "^16.13.1",
     "react-d3-speedometer": "^0.12.0",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "react-spinners": "^0.9.0"
+    "react-simple-maps": "^2.1.2",
+    "react-spinners": "^0.9.0",
+    "react-tooltip": "^4.2.7"
   },
   "scripts": {
     "start": "react-scripts start",

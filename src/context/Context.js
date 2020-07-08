@@ -4,6 +4,7 @@ export const Context = createContext();
 
 const ContextProvider = (props) => {
   const [thisMonthTweets, setThisMonthTweets] = useState([]);
+  const [todayTweets, setTodayTweets] = useState({});
   const [thisMonthTweetsCollection, setThisMonthTweetsCollection] = useState(
     []
   );
@@ -15,6 +16,8 @@ const ContextProvider = (props) => {
         setThisMonthTweets,
         thisMonthTweetsCollection,
         setThisMonthTweetsCollection,
+        todayTweets,
+        setTodayTweets,
       }}
     >
       {props.children}
