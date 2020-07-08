@@ -6,13 +6,13 @@ import "./Home.css";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 // Tabs
-import { Overview, TodayReport } from "./Tabs";
+import { Overview, TodayReport, History } from "./Tabs";
 
 // actions
 import {
   getThisMonthTweets,
   getTweetsByMonth,
-  getTodayTweets,
+  getTodayTweets
 } from "./../../actions/actions";
 
 // Context
@@ -25,19 +25,19 @@ const Home = () => {
     setThisMonthTweetsCollection,
     setTodayTweets,
     todayTweets,
-    selectedComponent,
+    selectedComponent
   } = useContext(Context);
 
   useEffect(() => {
-    getThisMonthTweets("2020-06-05").then((res) => {
+    getThisMonthTweets("2020-06-05").then(res => {
       setThisMonthTweets(res.data);
     });
 
-    getTweetsByMonth("2020-06-05").then((res) => {
+    getTweetsByMonth("2020-06-05").then(res => {
       setThisMonthTweetsCollection(res.data);
     });
 
-    getTodayTweets("2020-07-08").then((res) => {
+    getTodayTweets("2020-06-08").then(res => {
       console.log(res.data);
       setTodayTweets(res.data);
     });
@@ -47,6 +47,7 @@ const Home = () => {
   var mapping = {
     TodayReport: TodayReport,
     Overview: Overview,
+    History: History
   };
 
   var Component = mapping[selectedComponent];

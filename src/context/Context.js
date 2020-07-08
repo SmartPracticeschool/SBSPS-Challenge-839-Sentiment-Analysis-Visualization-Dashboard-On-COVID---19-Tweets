@@ -2,7 +2,7 @@ import React, { useState, createContext, useEffect } from "react";
 
 export const Context = createContext();
 
-const ContextProvider = (props) => {
+const ContextProvider = props => {
   const [thisMonthTweets, setThisMonthTweets] = useState([]);
   const [todayTweets, setTodayTweets] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("TodayReport");
@@ -20,7 +20,7 @@ const ContextProvider = (props) => {
         todayTweets,
         setTodayTweets,
         selectedComponent,
-        setSelectedComponent,
+        setSelectedComponent
       }}
     >
       {props.children}
