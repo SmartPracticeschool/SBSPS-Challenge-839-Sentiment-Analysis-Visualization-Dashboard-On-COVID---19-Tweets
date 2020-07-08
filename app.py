@@ -28,6 +28,7 @@ import joblib
 import os
 import json
 import datetime
+import time
 import random
 import requests
 import re
@@ -194,6 +195,7 @@ class StreamListener(tweepy.StreamListener):
         result["quotedText"] = quoted_text
         result["score"] = random.randrange(2,9)
         result["prediction"] = prediction
+        time.sleep(4)
         send(result)
         print("New tweet sent")
         # print(status.created_at,status.user.screen_name,is_retweet,is_quote,text,quoted_text)
