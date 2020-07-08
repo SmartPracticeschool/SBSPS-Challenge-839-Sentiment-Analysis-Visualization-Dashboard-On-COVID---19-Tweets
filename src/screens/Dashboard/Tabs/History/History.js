@@ -4,18 +4,18 @@ import { ResponsiveLine } from "@nivo/line";
 
 const History = () => {
   return (
-    <div style={{ marginTop: -18 }}>
-      <div className="title-header">
+    <div style={{ marginTop: -18, marginLeft: 20 }}>
+      <div className="title-header" style={{ marginLeft: -4 }}>
         <p>History of sentiments throughout the month</p>
       </div>
 
       <div className="grid-container">
-        <div className="grid-item">
+        <div className="grid-item" style={{ marginBottom: 20 }}>
           <div className="card">
             <div className="card-header">
               <p>Anger</p>
             </div>
-            <div className="card-content">
+            <div className="card-content" style={{ height: 250 }}>
               <ResponsiveLine
                 data={data}
                 margin={{ top: 10, right: 50, bottom: 50, left: 50 }}
@@ -25,7 +25,7 @@ const History = () => {
                   min: "0",
                   max: "100",
                   stacked: true,
-                  reverse: false,
+                  reverse: false
                 }}
                 axisTop={null}
                 axisRight={null}
@@ -36,7 +36,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "Date of month",
                   legendOffset: 36,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 axisLeft={{
                   orient: "left",
@@ -45,7 +45,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "sentiment level",
                   legendOffset: -40,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 colors={{ scheme: "nivo" }}
                 pointSize={10}
@@ -64,7 +64,7 @@ const History = () => {
             <div className="card-header">
               <p>Joy</p>
             </div>
-            <div className="card-content">
+            <div className="card-content" style={{ height: 250 }}>
               <ResponsiveLine
                 data={data}
                 margin={{ top: 10, right: 50, bottom: 50, left: 50 }}
@@ -74,7 +74,7 @@ const History = () => {
                   min: "0",
                   max: "100",
                   stacked: true,
-                  reverse: false,
+                  reverse: false
                 }}
                 axisTop={null}
                 axisRight={null}
@@ -85,7 +85,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "Date of month",
                   legendOffset: 36,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 axisLeft={{
                   orient: "left",
@@ -94,7 +94,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "sentiment level",
                   legendOffset: -40,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 colors={{ scheme: "nivo" }}
                 pointSize={10}
@@ -110,12 +110,12 @@ const History = () => {
         </div>
       </div>
       <div className="grid-container">
-        <div className="grid-item">
+        <div className="grid-item" style={{ marginBottom: 20 }}>
           <div className="card">
             <div className="card-header">
               <p>Disgust</p>
             </div>
-            <div className="card-content">
+            <div className="card-content" style={{ height: 250 }}>
               <ResponsiveLine
                 data={data}
                 margin={{ top: 10, right: 50, bottom: 50, left: 50 }}
@@ -125,7 +125,7 @@ const History = () => {
                   min: "0",
                   max: "100",
                   stacked: true,
-                  reverse: false,
+                  reverse: false
                 }}
                 axisTop={null}
                 axisRight={null}
@@ -136,7 +136,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "Date of month",
                   legendOffset: 36,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 axisLeft={{
                   orient: "left",
@@ -145,7 +145,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "sentiment level",
                   legendOffset: -40,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 colors={{ scheme: "nivo" }}
                 pointSize={10}
@@ -164,7 +164,7 @@ const History = () => {
             <div className="card-header">
               <p>Sad</p>
             </div>
-            <div className="card-content">
+            <div className="card-content" style={{ height: 250 }}>
               <ResponsiveLine
                 data={data}
                 margin={{ top: 10, right: 50, bottom: 50, left: 50 }}
@@ -174,7 +174,7 @@ const History = () => {
                   min: "0",
                   max: "100",
                   stacked: true,
-                  reverse: false,
+                  reverse: false
                 }}
                 axisTop={null}
                 axisRight={null}
@@ -185,7 +185,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "Date of month",
                   legendOffset: 36,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 axisLeft={{
                   orient: "left",
@@ -194,7 +194,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "sentiment level",
                   legendOffset: -40,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 colors={{ scheme: "nivo" }}
                 pointSize={10}
@@ -210,12 +210,12 @@ const History = () => {
         </div>
       </div>
       <div className="grid-container">
-        <div className="grid-item">
+        <div className="grid-item" style={{ marginBottom: 20 }}>
           <div className="card">
             <div className="card-header">
               <p>Fear</p>
             </div>
-            <div className="card-content">
+            <div className="card-content" style={{ height: 250 }}>
               <ResponsiveLine
                 data={data}
                 margin={{ top: 10, right: 50, bottom: 50, left: 50 }}
@@ -225,7 +225,7 @@ const History = () => {
                   min: "0",
                   max: "100",
                   stacked: true,
-                  reverse: false,
+                  reverse: false
                 }}
                 axisTop={null}
                 axisRight={null}
@@ -236,7 +236,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "Date of month",
                   legendOffset: 36,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 axisLeft={{
                   orient: "left",
@@ -245,7 +245,7 @@ const History = () => {
                   tickRotation: 0,
                   legend: "sentiment level",
                   legendOffset: -40,
-                  legendPosition: "middle",
+                  legendPosition: "middle"
                 }}
                 colors={{ scheme: "nivo" }}
                 pointSize={10}
@@ -273,44 +273,44 @@ const data = [
     data: [
       {
         x: "03",
-        y: 60,
+        y: 60
       },
       {
         x: "06",
-        y: 20,
+        y: 20
       },
       {
         x: "09",
-        y: 29,
+        y: 29
       },
       {
         x: "12",
-        y: 67,
+        y: 67
       },
       {
         x: "15",
-        y: 28,
+        y: 28
       },
       {
         x: "18",
-        y: 12,
+        y: 12
       },
       {
         x: "21",
-        y: 25,
+        y: 25
       },
       {
         x: "24",
-        y: 29,
+        y: 29
       },
       {
         x: "27",
-        y: 24,
+        y: 24
       },
       {
         x: "30",
-        y: 10,
-      },
-    ],
-  },
+        y: 10
+      }
+    ]
+  }
 ];
