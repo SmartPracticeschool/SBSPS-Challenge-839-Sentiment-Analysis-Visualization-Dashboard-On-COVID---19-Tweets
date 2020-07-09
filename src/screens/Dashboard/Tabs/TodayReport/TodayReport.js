@@ -702,7 +702,10 @@ const TodayReport = () => {
         </div>
 
         {/* Radar chart */}
-        <div className="grid-container" style={{ marginTop: 30 }}>
+        <div
+          className="grid-container"
+          style={{ marginTop: 30, marginBottom: 30 }}
+        >
           <div className="grid-item">
             <div className="card">
               <div className="card-header">
