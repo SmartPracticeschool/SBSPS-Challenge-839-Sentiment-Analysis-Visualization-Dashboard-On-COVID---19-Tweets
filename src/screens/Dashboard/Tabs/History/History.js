@@ -12,190 +12,190 @@ const History = () => {
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-29": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-28": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-27": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-26": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-25": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-24": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-23": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-22": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-21": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-20": {
       sadness: 0.161487,
       joy: 0.607734,
       fear: 0.139994,
       disgust: 0.111099,
-      anger: 0.051704,
+      anger: 0.051704
     },
     "2020-06-19": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-18": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-17": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-16": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-15": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-14": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-13": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-12": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-11": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-10": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-09": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-08": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-07": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-06": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-06-05": {
       sadness: 0.225129,
       joy: 0.435498,
       fear: 0.030406,
       disgust: 0.294654,
-      anger: 0.104626,
+      anger: 0.104626
     },
     "2020-07-08": {
       sadness: 0.2821285,
       joy: 0.07091700000000001,
       fear: 0.1489865,
       disgust: 0.2465125,
-      anger: 0.10238249999999999,
-    },
+      anger: 0.10238249999999999
+    }
   };
 
   const setData = () => {
@@ -203,67 +203,77 @@ const History = () => {
       {
         id: "emotion",
         color: "hsl(129, 70%, 50%)",
-        data: [],
-      },
+        data: []
+      }
     ];
     let fear = [
       {
         id: "emotion",
         color: "hsl(192, 70%, 50%)",
-        data: [],
-      },
+        data: []
+      }
     ];
     let joy = [
       {
         id: "emotion",
         color: "hsl(311, 70%, 50%)",
-        data: [],
-      },
+        data: []
+      }
     ];
     let sad = [
       {
         id: "emotion",
         color: "hsl(252, 70%, 50%)",
-        data: [],
-      },
+        data: []
+      }
     ];
     let disgust = [
       {
         id: "emotion",
         color: "hsl(131, 70%, 50%)",
-        data: [],
-      },
+        data: []
+      }
     ];
 
-    for (let i = 0; i < Object.keys(responseData).length; i = i + 2) {
-      let date = Object.keys(responseData)[i];
+    Object.keys(responseData).map(key => {
+      var date = key;
       anger[0].data.push({
         x: date.split("-")[2],
-        y: responseData[date]["anger"],
+        // y: responseData[date]["anger"]
+        y: Math.random(1)
       });
       fear[0].data.push({
         x: date.split("-")[2],
-        y: responseData[date]["fear"],
+        // y: responseData[date]["fear"]
+        y: Math.random(1)
       });
       sad[0].data.push({
         x: date.split("-")[2],
-        y: responseData[date]["sad"],
+        // y: responseData[date]["sad"]
+        y: Math.random(1)
       });
       joy[0].data.push({
         x: date.split("-")[2],
-        y: responseData[date]["joy"],
+        // y: responseData[date]["joy"]
+        y: Math.random(1)
       });
       disgust[0].data.push({
         x: date.split("-")[2],
-        y: responseData[date]["disgust"],
+        // y: responseData[date]["disgust"]
+        y: Math.random(1)
       });
-    }
+    });
+
+    // for (let i = 0; i < Object.keys(responseData).length; i = i + 2) {
+    //   let date = Object.keys(responseData)[i];
+
+    // }
     let emotions = {
       anger,
       fear,
       sad,
       joy,
-      disgust,
+      disgust
     };
     setEmotions(emotions);
     setLoading(false);
@@ -271,7 +281,7 @@ const History = () => {
 
   useEffect(() => {
     setData();
-  });
+  }, []);
 
   if (loading) {
     return (
@@ -302,7 +312,7 @@ const History = () => {
                     min: "0",
                     max: "1",
                     stacked: true,
-                    reverse: false,
+                    reverse: false
                   }}
                   axisTop={null}
                   axisRight={null}
@@ -313,7 +323,7 @@ const History = () => {
                     tickRotation: 90,
                     legend: "Date of month",
                     legendOffset: 36,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
                   axisLeft={{
                     orient: "left",
@@ -322,9 +332,9 @@ const History = () => {
                     tickRotation: 0,
                     legend: "sentiment level",
                     legendOffset: -40,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
-                  colors={{ scheme: "nivo" }}
+                  colors={{ scheme: "dark2" }}
                   pointSize={10}
                   pointColor={{ theme: "background" }}
                   pointBorderWidth={2}
@@ -351,7 +361,7 @@ const History = () => {
                     min: "0",
                     max: "1",
                     stacked: true,
-                    reverse: false,
+                    reverse: false
                   }}
                   axisTop={null}
                   axisRight={null}
@@ -362,7 +372,7 @@ const History = () => {
                     tickRotation: 90,
                     legend: "Date of month",
                     legendOffset: 36,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
                   axisLeft={{
                     orient: "left",
@@ -371,9 +381,9 @@ const History = () => {
                     tickRotation: 0,
                     legend: "sentiment level",
                     legendOffset: -40,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
-                  colors={{ scheme: "nivo" }}
+                  colors={{ scheme: "dark2" }}
                   pointSize={10}
                   pointColor={{ theme: "background" }}
                   pointBorderWidth={2}
@@ -402,7 +412,7 @@ const History = () => {
                     min: "0",
                     max: "1",
                     stacked: true,
-                    reverse: false,
+                    reverse: false
                   }}
                   axisTop={null}
                   axisRight={null}
@@ -413,7 +423,7 @@ const History = () => {
                     tickRotation: 90,
                     legend: "Date of month",
                     legendOffset: 36,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
                   axisLeft={{
                     orient: "left",
@@ -422,9 +432,9 @@ const History = () => {
                     tickRotation: 0,
                     legend: "sentiment level",
                     legendOffset: -40,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
-                  colors={{ scheme: "nivo" }}
+                  colors={{ scheme: "dark2" }}
                   pointSize={10}
                   pointColor={{ theme: "background" }}
                   pointBorderWidth={2}
@@ -451,7 +461,7 @@ const History = () => {
                     min: "0",
                     max: "1",
                     stacked: true,
-                    reverse: false,
+                    reverse: false
                   }}
                   axisTop={null}
                   axisRight={null}
@@ -462,7 +472,7 @@ const History = () => {
                     tickRotation: 90,
                     legend: "Date of month",
                     legendOffset: 36,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
                   axisLeft={{
                     orient: "left",
@@ -471,9 +481,9 @@ const History = () => {
                     tickRotation: 0,
                     legend: "sentiment level",
                     legendOffset: -40,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
-                  colors={{ scheme: "nivo" }}
+                  colors={{ scheme: "dark2" }}
                   pointSize={10}
                   pointColor={{ theme: "background" }}
                   pointBorderWidth={2}
@@ -502,7 +512,7 @@ const History = () => {
                     min: "0",
                     max: "1",
                     stacked: true,
-                    reverse: false,
+                    reverse: false
                   }}
                   axisTop={null}
                   axisRight={null}
@@ -513,7 +523,7 @@ const History = () => {
                     tickRotation: 90,
                     legend: "Date of month",
                     legendOffset: 36,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
                   axisLeft={{
                     orient: "left",
@@ -522,9 +532,9 @@ const History = () => {
                     tickRotation: 0,
                     legend: "sentiment level",
                     legendOffset: -40,
-                    legendPosition: "middle",
+                    legendPosition: "middle"
                   }}
-                  colors={{ scheme: "nivo" }}
+                  colors={{ scheme: "dark2" }}
                   pointSize={10}
                   pointColor={{ theme: "background" }}
                   pointBorderWidth={2}
@@ -551,44 +561,44 @@ const data = [
     data: [
       {
         x: "03",
-        y: 60,
+        y: 60
       },
       {
         x: "06",
-        y: 20,
+        y: 20
       },
       {
         x: "09",
-        y: 29,
+        y: 29
       },
       {
         x: "12",
-        y: 67,
+        y: 67
       },
       {
         x: "15",
-        y: 28,
+        y: 28
       },
       {
         x: "18",
-        y: 12,
+        y: 12
       },
       {
         x: "21",
-        y: 25,
+        y: 25
       },
       {
         x: "24",
-        y: 29,
+        y: 29
       },
       {
         x: "27",
-        y: 24,
+        y: 24
       },
       {
         x: "30",
-        y: 10,
-      },
-    ],
-  },
+        y: 10
+      }
+    ]
+  }
 ];

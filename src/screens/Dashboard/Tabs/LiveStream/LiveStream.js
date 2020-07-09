@@ -20,22 +20,22 @@ import {
   faCircle
 } from "@fortawesome/free-solid-svg-icons";
 
-const ENDPOINT = "http://127.0.0.1:5000/liveStream";
-const socket = io(ENDPOINT);
+// const ENDPOINT = "http://127.0.0.1:5000/liveStream";
+// const socket = io(ENDPOINT);
 
 // Socket listeners
-socket.on("connect", () => {
-  socket.send("User connected");
-});
+// socket.on("connect", () => {
+//   socket.send("User connected");
+// });
 const LiveStream = () => {
   const [liveStreamData, setLiveStreamData] = useState([]);
   const [recentData, setRecentData] = useState({});
   useEffect(() => {
-    socket.on("message", data => {
-      setLiveStreamData(liveStreamData => [...liveStreamData, data]);
-      console.log(data);
-      setRecentData(data);
-    });
+    // socket.on("message", data => {
+    //   setLiveStreamData(liveStreamData => [...liveStreamData, data]);
+    //   console.log(data);
+    //   setRecentData(data);
+    // });
   }, []);
 
   return (
