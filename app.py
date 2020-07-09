@@ -80,16 +80,17 @@ auth.set_access_token(access_token, access_token_secret)
 auth_api = API(auth)
 
 
-# Global Variables
+# # Global Variables
 currentDate = str(datetime.datetime.now()).split(" ")[0]
-currentTime = str(datetime.datetime.now()).split(" ")[1]
-currentTimeStamp = datetime.datetime.now()
-currentTimeStampHour = currentTimeStamp.hour
+# currentTime = str(datetime.datetime.now()).split(" ")[1]
+# currentTimeStamp = datetime.datetime.now()
+# currentTimeStampHour = currentTimeStamp.hour
 
 # Dev
-startTimeStampHour  = 16
-currentTimeStampHour = 23
-startTimeStampDay = 6
+
+startTimeStampHour  = 8
+currentTimeStampHour = 16
+startTimeStampDay = 8
 
 # limit = random.randrange(600,650)
 
@@ -168,11 +169,11 @@ def updateHastags():
 
 # route to get tweets from twitter
 @app.route('/api/getTweets',methods=['GET',"POST"])
-def getTweets():
+def getTweets():    
 
     # Dev   
-    startTime = datetime.datetime(2020, 7, 6,0, 0 ,0)
-    endTime = datetime.datetime(2020, 7, 6, 23, 0 ,0)
+    startTime = datetime.datetime(2020, 7, 8,0, 0 ,0)
+    endTime = datetime.datetime(2020, 7, 8, 23, 0 ,0)
 
     # Custom Modal to predict the sentiment of each text
     modal = joblib.load('model.pkl')
@@ -195,14 +196,14 @@ def getTweets():
     # Loop through the list of hashtags
     # Get the tweets for each hastag
     for queryString in fetchedHashtags:
-        limit = 50
+        limit = random.randint(200,220)
         count = 0
         queryString = "#" + queryString
         for tweet in tweepy.Cursor(auth_api.search,q=queryString,count=200,
                         lang="en",geocode="22.9734,78.6569,1000km").items():
-            print(queryString)
+            print(queryString,limit,count)
             tweets = ""
-            # Collect the tweets for the past 6 hrs
+            # Collect the tweets
             if tweet.created_at < endTime and tweet.created_at > startTime:
 
                 # Predictions
@@ -335,6 +336,7 @@ def getTweetsByDate():
 
         for result in res["results"]:
             for item in res["results"][result]:
+               
                 try:
                     # Find the top influencers and their tweetscount and likes count
                     if item["screenName"] in topInfluencersCounter:
@@ -342,17 +344,19 @@ def getTweetsByDate():
                                               ]["favouriteCount"] += int(item["favouriteCount"])
                         topInfluencersCounter[item["screenName"]
                                               ]["tweetCount"] += 1
+                        topInfluencersCounter[item["screenName"]]["followersCount"] = int(item["followersCount"])
                     else:
                         topInfluencersCounter[item["screenName"]] = {}
                         topInfluencersCounter[item["screenName"]]["favouriteCount"] = int(
                             item["favouriteCount"])
                         topInfluencersCounter[item["screenName"]
                                               ]["tweetCount"] = 1
+                        topInfluencersCounter[item["screenName"]]["followersCount"] = int(item["followersCount"])
                 except:
                     pass
 
         topInfluencersCounter = {k: v for k, v in reversed(
-            sorted(topInfluencersCounter.items(), key=lambda item: item[1]["tweetCount"]))}
+            sorted(topInfluencersCounter.items(), key=lambda item: item[1]["followersCount"]))}
 
         # Add the top 5 hastags in the result
         res["topInfluencers"] = {}
@@ -474,15 +478,15 @@ def getCoordinates():
     req = requests.get("https://geocoder.ls.hereapi.com/6.2/geocode.json?searchtext=" +
                        city+"&gen=9&apiKey=Omfb3D_6gnrF9h7r_TsQAyFJrj47fZcbqIeN41Uxxxw")
     data = req.json()
-        try:
-            if data["Response"]["View"][0]["Result"][0]["Location"]["Address"]["Country"] == "IND":
-                result = {"state":data["Response"]["View"][0]["Result"][0]["Location"]["Address"]["AdditionalData"][1]["value"]}
-            else:
-                result = {}
-        except:
+    try:
+        if data["Response"]["View"][0]["Result"][0]["Location"]["Address"]["Country"] == "IND":
+            result = {"state":data["Response"]["View"][0]["Result"][0]["Location"]["Address"]["AdditionalData"][1]["value"]}
+        else:
             result = {}
+    except:
+        result = {}
 
-    return result
+    return result   
 
 
 @app.route('/api/getThisMonthTweets',methods=["GET","POST"])
