@@ -36,7 +36,8 @@ const Sidebar = () => {
       iconName: faChartPie
     },
     {
-      name: "Graphs",
+      name: "Live Stream",
+      key: "LiveStream",
       iconName: faChartBar
     },
     {

@@ -12,7 +12,9 @@ import { Overview, TodayReport, History, LiveStream } from "./Tabs";
 import {
   getThisMonthTweets,
   getTweetsByMonth,
-  getTodayTweets
+  getTodayTweets,
+  getHashtags,
+  getAllTweetsEmotions
 } from "./../../actions/actions";
 
 // Context
@@ -25,7 +27,9 @@ const Home = () => {
     setThisMonthTweetsCollection,
     setTodayTweets,
     todayTweets,
-    selectedComponent
+    selectedComponent,
+    setHashtags,
+    setMonthlyTweetsEmotions
   } = useContext(Context);
 
   useEffect(() => {
@@ -37,9 +41,21 @@ const Home = () => {
       setThisMonthTweetsCollection(res.data);
     });
 
-    getTodayTweets("2020-06-08").then(res => {
+    getTodayTweets("2020-07-09").then(res => {
       console.log(res.data);
       setTodayTweets(res.data);
+    });
+
+    getHashtags().then(res => {
+      if (res.status === 200) {
+        setHashtags(res.data.hashtags);
+      }
+    });
+
+    getAllTweetsEmotions("2020-06-05").then(res => {
+      if (res.status === 200) {
+        setMonthlyTweetsEmotions(res.data);
+      }
     });
   }, []);
 

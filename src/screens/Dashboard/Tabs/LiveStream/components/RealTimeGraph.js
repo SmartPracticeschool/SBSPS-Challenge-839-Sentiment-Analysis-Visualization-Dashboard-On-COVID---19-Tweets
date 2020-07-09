@@ -12,14 +12,14 @@ class Chart extends React.Component {
   render() {
     var data = {
       date: new Date(),
-      Car:
+      SentimentLevel:
         this.props.data.score !== undefined
           ? this.props.data.score
           : Math.floor(Math.random() * 10)
     };
     var chart = {
       axis: {
-        y: { min: 0, max: 15 }
+        y: { min: 0, max: 1 }
       },
       point: {
         show: true
@@ -31,7 +31,7 @@ class Chart extends React.Component {
     var flow = {
       duration: 200
     };
-    return <RTChart chart={chart} fields={["Car"]} data={data} />;
+    return <RTChart chart={chart} fields={["SentimentLevel"]} data={data} />;
   }
 }
 export default Chart;
