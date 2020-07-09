@@ -417,14 +417,8 @@ const TodayReport = () => {
               </div>
             </div>
           </div>
-          <div className="grid-item" style={{ marginTop: 30 }}>
+          {/* <div className="grid-item" style={{ marginTop: 30 }}>
             <div className="card">
-              {/* <div
-                className="card-header"
-                style={{ paddingTop: 15, paddingBottom: 15 }}
-              >
-                helo
-              </div> */}
               <div className="card-content">
                 <p className="legend-text">
                   <span
@@ -464,7 +458,7 @@ const TodayReport = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Top Influencers */}
