@@ -99,7 +99,7 @@ currentDate = str(datetime.datetime.now()).split(" ")[0]
 
 startTimeStampHour  = 16
 currentTimeStampHour = 23
-startTimeStampDay = 8
+startTimeStampDay = 9
 
 # limit = random.randrange(600,650)
 
@@ -186,15 +186,18 @@ class StreamListener(tweepy.StreamListener):
         
         # classify using model
         customTokens = removeNoise(word_tokenize(quoted_text))
-        prediction = modal.classify(dict([token, True] for token in customTokens))
+        # prediction = modal.classify(dict([token, True] for token in customTokens))
+        prediction = modal.prob_classify(dict([token, True] for token in customTokens))
+        score = prediction.prob('Positive')
+
         result = {}
-        result["createdAt"] = str(status.created_at)
+        result["createdAt"] = str(status.created_at).split(" ")[1]
         result["screenName"] = status.user.screen_name
         result["isRetweet"] = is_retweet
         result["text"] = text
         result["quotedText"] = quoted_text
-        result["score"] = random.randrange(2,9)
-        result["prediction"] = prediction
+        result["score"] = score
+        result["prediction"] = prediction.max()
         time.sleep(4)
         send(result)
         print("New tweet sent")
@@ -222,8 +225,18 @@ def getLiveStream(msg):
 def test():
     return "Running"
 
+
+#get the name of the hashtags to be searched
+@app.route('/api/getHashtags', methods = ["GET"])
+def getHashtags():
+    result = mongo.db.hashtags.find({})    
+    for res in result:
+        return json.dumps(res, indent=4, default=json_util.default)
+    
+    return []
+
 # route to store the hashtags to be searched
-@app.route('/api/updateHastags',methods=['POST'])
+@app.route('/api/updateHashtags',methods=["GET","POST"])
 def updateHastags():
     result = {}
     hashtags = request.json["hashtags"]
@@ -241,8 +254,8 @@ def updateHastags():
 def getTweets():    
 
     # Dev   
-    startTime = datetime.datetime(2020, 7, 8,0, 0 ,0)
-    endTime = datetime.datetime(2020, 7, 8, 23, 0 ,0)
+    startTime = datetime.datetime(2020, 7, 9,0, 0 ,0)
+    endTime = datetime.datetime(2020, 7, 9, 23, 0 ,0)
 
     # startTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, startTimeStampDay, startTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
     # endTime = datetime.datetime(currentTimeStamp.year, currentTimeStamp.month, currentTimeStamp.day, currentTimeStampHour, currentTimeStamp.minute, currentTimeStamp.second)
@@ -498,9 +511,13 @@ def getTweetsByDate():
 
 
 # Get all tweets in the database
-@app.route('/api/getAllTweetsEmotions', methods=['GET'])
+@app.route('/api/getAllTweetsEmotions', methods=['GET',"POST"])
 def getAllTweetsEmotions():
-    results = mongo.db.tweets.find({})
+    date = request.json["date"]
+    splittedDate = date.split('-')
+    month = "-" + splittedDate[1] + "-"
+    results = mongo.db.tweets.find({"date": {"$regex": month}})
+
     counter = {}
 
     for res in results:
