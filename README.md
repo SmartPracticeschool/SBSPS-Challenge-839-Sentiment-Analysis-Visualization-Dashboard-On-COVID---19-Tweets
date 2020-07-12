@@ -2,6 +2,10 @@
 
 This is an application that was developed for IBM Hack Challenge 2020.
 
+The main objective of this application is to analyze the current tweets related to COVID - 19 and lockdown. By analyzing the tweets, We can understand the sentiment levels (Anger, Joy, Sadness, Disgust, Fear) of the people in the country. Those analyzed data can be represented in various forms of charts and graphs, which will be very useful to understand. We can also predict the future sentiment levels of the people, which will be very useful for the government to understand the response for a particular decision. For example, If lockdown gets extended. 
+
+Youtube Video Link - [https://www.youtube.com/watch?v=eGAU2JLPBko&feature=youtu.be](https://www.youtube.com/watch?v=eGAU2JLPBko&feature=youtu.be)
+
 ## Table Of Contents
  - [About the Project]()
     - [Built With](#builtwith)
