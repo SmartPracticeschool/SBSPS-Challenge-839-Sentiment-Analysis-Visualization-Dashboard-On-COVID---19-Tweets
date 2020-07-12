@@ -40,7 +40,7 @@ Yarn | 1.22.4
 Clone the repository.
 
 ```
-git clone https://github.com/saranrajshri/SIH-2020.git
+git clone https://github.com/SmartPracticeschool/SBSPS-Challenge-839-Sentiment-Analysis-Visualization-Dashboard-On-COVID---19-Tweets.git
 ```
 
 ## Install the dependencies
