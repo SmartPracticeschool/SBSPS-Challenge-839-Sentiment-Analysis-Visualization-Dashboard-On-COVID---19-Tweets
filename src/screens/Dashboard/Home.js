@@ -37,7 +37,7 @@ const Home = () => {
       setThisMonthTweetsCollection(res.data);
     });
 
-    getTodayTweets("2020-07-08").then((res) => {
+    getTodayTweets("2020-07-11").then((res) => {
       console.log(res.data);
       setTodayTweets(res.data);
     });
