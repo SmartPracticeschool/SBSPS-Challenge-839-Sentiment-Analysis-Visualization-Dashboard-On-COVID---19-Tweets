@@ -2,10 +2,12 @@ import React, { useState, createContext, useEffect } from "react";
 
 export const Context = createContext();
 
-const ContextProvider = (props) => {
+const ContextProvider = props => {
   const [thisMonthTweets, setThisMonthTweets] = useState([]);
   const [todayTweets, setTodayTweets] = useState({});
   const [selectedComponent, setSelectedComponent] = useState("TodayReport");
+  const [hashtags, setHashtags] = useState([]);
+  const [monthlyTweetsEmotions, setMonthlyTweetsEmotions] = useState([]);
   const [thisMonthTweetsCollection, setThisMonthTweetsCollection] = useState(
     []
   );
@@ -21,6 +23,10 @@ const ContextProvider = (props) => {
         setTodayTweets,
         selectedComponent,
         setSelectedComponent,
+        hashtags,
+        setHashtags,
+        monthlyTweetsEmotions,
+        setMonthlyTweetsEmotions
       }}
     >
       {props.children}

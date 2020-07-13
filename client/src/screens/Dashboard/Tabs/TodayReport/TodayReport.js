@@ -19,7 +19,7 @@ import {
   faSadCry,
   faUserAlt,
   faHashtag,
-  faRetweet,
+  faRetweet
 } from "@fortawesome/free-solid-svg-icons";
 
 // Charts
@@ -29,12 +29,14 @@ import { ResponsivePie } from "@nivo/pie";
 
 // Context
 import { Context } from "../../../../context/Context";
+import HashtagsModal from "./components/HashtagsModal";
 
 const TodayReport = () => {
   const { todayTweets } = useContext(Context);
   const [data, setData] = useState();
   const [pieChartData, setPieChartData] = useState([]);
   const [radarData, setRadarData] = useState({});
+  const [isModalOpen, setModal] = useState(false);
 
   if (todayTweets.results !== undefined) {
     // Overall score calculation (out of 5)
@@ -89,7 +91,7 @@ const TodayReport = () => {
         backgroundColor: "rgba(44, 62, 80,0.2)",
         borderColor: "rgb(52, 73, 94)",
         pointBackgroundColor: "rgb(52, 73, 94)",
-        pointHoverBorderColor: "rgba(179,181,198,1)",
+        pointHoverBorderColor: "rgba(179,181,198,1)"
       },
       {
         backgroundColor: "rgba(255,99,132,0.2)",
@@ -97,7 +99,7 @@ const TodayReport = () => {
         pointBackgroundColor: "rgba(255,99,132,1)",
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgba(255,99,132,1)",
+        pointHoverBorderColor: "rgba(255,99,132,1)"
       },
       {
         backgroundColor: "rgba(41, 128, 185,0.2)",
@@ -105,8 +107,8 @@ const TodayReport = () => {
         pointBackgroundColor: "rgb(52, 152, 219)",
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgba(255,99,132,1)",
-      },
+        pointHoverBorderColor: "rgba(255,99,132,1)"
+      }
     ];
     var dataset = [];
     {
@@ -128,13 +130,13 @@ const TodayReport = () => {
           (emotions.joy * 100).toFixed(0),
           (emotions.fear * 100).toFixed(0),
           (emotions.anger * 100).toFixed(0),
-          (emotions.disgust * 100).toFixed(0),
+          (emotions.disgust * 100).toFixed(0)
         ];
         dataset.push(result);
       });
       var overallData = {
         labels: ["Sadness", "Joy", "Fear", "Disgust", "Anger"],
-        datasets: dataset,
+        datasets: dataset
       };
       setRadarData(overallData);
     }
@@ -143,7 +145,7 @@ const TodayReport = () => {
     var barChartData = [];
     // Prepare data for bar chart
 
-    Object.keys(todayTweets.overAllEmotions).map((eachEmotionKey) => {
+    Object.keys(todayTweets.overAllEmotions).map(eachEmotionKey => {
       var subData = {};
       subData.id = eachEmotionKey;
       subData[eachEmotionKey] = (
@@ -161,7 +163,7 @@ const TodayReport = () => {
     var overallData = [];
     Object.keys(todayTweets.topInfluencers)
       .slice(0, 5)
-      .map((user) => {
+      .map(user => {
         var subData = {};
         subData.id = user;
         subData.label = user;
@@ -183,7 +185,7 @@ const TodayReport = () => {
   return (
     <div style={{ marginTop: -18 }}>
       <div className="title-header">
-        <p className="light-title">Today's Report ( 7 July )</p>
+        <p className="light-title">Today's Report </p>
       </div>
 
       <div className="content-wrapper">
@@ -207,30 +209,30 @@ const TodayReport = () => {
                         "#e74c3c",
                         "#f39c12",
                         "#f1c40f",
-                        "#3498db",
+                        "#3498db"
                       ]}
                       currentValueText=""
                       customSegmentLabels={[
                         {
                           position: "INSIDE",
-                          color: "#fff",
+                          color: "#fff"
                         },
                         {
                           position: "INSIDE",
-                          color: "#fff",
+                          color: "#fff"
                         },
                         {
                           position: "INSIDE",
-                          color: "#fff",
+                          color: "#fff"
                         },
                         {
                           position: "INSIDE",
-                          color: "#fff",
+                          color: "#fff"
                         },
                         {
                           position: "INSIDE",
-                          color: "#fff",
-                        },
+                          color: "#fff"
+                        }
                       ]}
                       ringWidth={20}
                       needleTransitionDuration={3333}
@@ -286,7 +288,11 @@ const TodayReport = () => {
                       {todayTweets.totalTweetCount}
                     </div>
                   </div>
-                  <div className="grid-item">
+                  <div
+                    className="grid-item"
+                    onClick={() => setModal(true)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <div className="small-title">
                       <FontAwesomeIcon icon={faHashtag} className="icon" />
                       No. Hashtags
@@ -300,7 +306,7 @@ const TodayReport = () => {
                       <FontAwesomeIcon icon={faUserAlt} className="icon" />
                       No. Users
                     </div>
-                    <div className="small-bold">1300</div>
+                    <div className="small-bold">1170</div>
                   </div>
                 </div>
               </div>
@@ -327,7 +333,7 @@ const TodayReport = () => {
                       color: "#38bcb2",
                       size: 4,
                       padding: 1,
-                      stagger: true,
+                      stagger: true
                     },
                     {
                       id: "lines",
@@ -336,8 +342,8 @@ const TodayReport = () => {
                       color: "#eed312",
                       rotation: -45,
                       lineWidth: 6,
-                      spacing: 10,
-                    },
+                      spacing: 10
+                    }
                   ]}
                   borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
                   axisTop={null}
@@ -348,7 +354,7 @@ const TodayReport = () => {
                     tickRotation: 0,
                     legend: "Emotions",
                     legendPosition: "middle",
-                    legendOffset: 32,
+                    legendOffset: 32
                   }}
                   axisLeft={{
                     tickSize: 5,
@@ -356,13 +362,13 @@ const TodayReport = () => {
                     tickRotation: 0,
                     legend: "Emotion Level",
                     legendPosition: "middle",
-                    legendOffset: -40,
+                    legendOffset: -40
                   }}
                   labelSkipWidth={12}
                   labelSkipHeight={12}
                   labelTextColor={{
                     from: "color",
-                    modifiers: [["darker", 1.6]],
+                    modifiers: [["darker", 1.6]]
                   }}
                   legends={[
                     {
@@ -382,11 +388,11 @@ const TodayReport = () => {
                         {
                           on: "hover",
                           style: {
-                            itemOpacity: 1,
-                          },
-                        },
-                      ],
-                    },
+                            itemOpacity: 1
+                          }
+                        }
+                      ]
+                    }
                   ]}
                   animate={true}
                   motionStiffness={90}
@@ -411,14 +417,8 @@ const TodayReport = () => {
               </div>
             </div>
           </div>
-          <div className="grid-item" style={{ marginTop: 30 }}>
+          {/* <div className="grid-item" style={{ marginTop: 30 }}>
             <div className="card">
-              {/* <div
-                className="card-header"
-                style={{ paddingTop: 15, paddingBottom: 15 }}
-              >
-                helo
-              </div> */}
               <div className="card-content">
                 <p className="legend-text">
                   <span
@@ -458,7 +458,7 @@ const TodayReport = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Top Influencers */}
@@ -538,7 +538,7 @@ const TodayReport = () => {
                       color: "rgba(255, 255, 255, 0.3)",
                       size: 4,
                       padding: 1,
-                      stagger: true,
+                      stagger: true
                     },
                     {
                       id: "lines",
@@ -547,58 +547,58 @@ const TodayReport = () => {
                       color: "rgba(255, 255, 255, 0.3)",
                       rotation: -45,
                       lineWidth: 6,
-                      spacing: 10,
-                    },
+                      spacing: 10
+                    }
                   ]}
                   fill={[
                     {
                       match: {
-                        id: "ruby",
+                        id: "ruby"
                       },
-                      id: "dots",
+                      id: "dots"
                     },
                     {
                       match: {
-                        id: "c",
+                        id: "c"
                       },
-                      id: "dots",
+                      id: "dots"
                     },
                     {
                       match: {
-                        id: "go",
+                        id: "go"
                       },
-                      id: "dots",
+                      id: "dots"
                     },
                     {
                       match: {
-                        id: "python",
+                        id: "python"
                       },
-                      id: "dots",
+                      id: "dots"
                     },
                     {
                       match: {
-                        id: "scala",
+                        id: "scala"
                       },
-                      id: "lines",
+                      id: "lines"
                     },
                     {
                       match: {
-                        id: "lisp",
+                        id: "lisp"
                       },
-                      id: "lines",
+                      id: "lines"
                     },
                     {
                       match: {
-                        id: "elixir",
+                        id: "elixir"
                       },
-                      id: "lines",
+                      id: "lines"
                     },
                     {
                       match: {
-                        id: "javascript",
+                        id: "javascript"
                       },
-                      id: "lines",
-                    },
+                      id: "lines"
+                    }
                   ]}
                   legends={[
                     {
@@ -614,11 +614,11 @@ const TodayReport = () => {
                         {
                           on: "hover",
                           style: {
-                            itemTextColor: "#000",
-                          },
-                        },
-                      ],
-                    },
+                            itemTextColor: "#000"
+                          }
+                        }
+                      ]
+                    }
                   ]}
                 />
               </div>
@@ -717,6 +717,12 @@ const TodayReport = () => {
             </div>
           </div>
         </div>
+
+        {/* Modal */}
+        <HashtagsModal
+          isOpen={isModalOpen}
+          handleClose={() => setModal(false)}
+        />
       </div>
     </div>
   );

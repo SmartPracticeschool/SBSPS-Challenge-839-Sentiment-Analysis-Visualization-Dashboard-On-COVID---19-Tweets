@@ -11,7 +11,7 @@ import {
   faChartBar,
   faBell,
   faChevronRight,
-  faThLarge,
+  faThLarge
 } from "@fortawesome/free-solid-svg-icons";
 
 // Context
@@ -23,25 +23,27 @@ const Sidebar = () => {
     {
       name: "Overview",
       key: "Overview",
-      iconName: faThLarge,
+      iconName: faThLarge
     },
     {
       name: "Today Report",
       key: "TodayReport",
-      iconName: faChartLine,
+      iconName: faChartLine
     },
     {
-      name: "Metrics",
-      iconName: faChartPie,
+      name: "History",
+      key: "History",
+      iconName: faChartPie
     },
     {
-      name: "Graphs",
-      iconName: faChartBar,
+      name: "Live Stream",
+      key: "LiveStream",
+      iconName: faChartBar
     },
     {
       name: "Notifications",
-      iconName: faBell,
-    },
+      iconName: faBell
+    }
   ]);
   return (
     <div className="sidebar">

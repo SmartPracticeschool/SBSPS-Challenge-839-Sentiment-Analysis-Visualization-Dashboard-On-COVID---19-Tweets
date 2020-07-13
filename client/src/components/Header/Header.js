@@ -14,7 +14,7 @@ const Header = () => {
         <button className="hamburger-btn">
           <FontAwesomeIcon icon={faBars} />
         </button>
-        <span className="faded-text">Search for something</span>
+        <span className="faded-text">Tweezy - Live Sentiment Analyzer</span>
       </div>
     </div>
   );
