@@ -1,0 +1,52 @@
+.sidebar {
+    height: 100%;
+    width:220px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #233646;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.avatar{
+    width: 50px;
+    margin:20px 20px 20px 20px;
+    height: 50px;
+    background-color: #008aff;
+    border-radius: 50%;
+}
+.sidebar-content-wrapper .username{
+    color:#fff;
+    margin:20px;
+    font-size: 13px;
+    color:#dadfe8
+}
+.sidebar-menu{
+    margin-top:40px;
+    cursor: pointer;
+    height: 480px;
+    background-color: #2f3f4f;  
+
+}
+.menu-title{
+    padding-left:20px;
+    padding-top:15px;
+    padding-bottom: 15px;
+    background-color: #2f3f4f;  
+}
+.menu-title:hover{
+    background-color: #293846;
+}
+.menu-title:hover .menu-item{
+    color:#fff
+}
+.menu-item{
+    color:#9fabbb;
+    font-size: 15px;
+}
+.chevron{
+    float: right;
+    margin-right:20px;
+}

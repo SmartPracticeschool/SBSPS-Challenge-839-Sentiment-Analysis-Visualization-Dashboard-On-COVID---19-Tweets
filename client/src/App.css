@@ -1,38 +1,30 @@
-.App {
-  text-align: center;
+@font-face {
+  font-family: openSansLight;
+  src: url('./assets/Open_Sans/OpenSans-Light.ttf');
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+@font-face {
+  font-family: openSans;
+  src: url('./assets/Open_Sans/OpenSans-Regular.ttf');
+}
+@font-face {
+  font-family: openSansSemiBold;
+  src: url('./assets/Open_Sans/OpenSans-SemiBold.ttf');
+}
+@font-face {
+  font-family: openSansBold;
+  src: url('./assets/Open_Sans/OpenSans-Bold.ttf');
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body{
+  margin: 0;
+  padding: 0;
+  font-family: openSans;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.icon{
+  margin-right:10px;
 }
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.main-content{
+  margin:20px;
+  margin-left:30px;
 }

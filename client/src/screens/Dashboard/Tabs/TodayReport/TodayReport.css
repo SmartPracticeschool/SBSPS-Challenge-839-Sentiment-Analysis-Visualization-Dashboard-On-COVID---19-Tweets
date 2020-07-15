@@ -1,0 +1,64 @@
+.title-header{
+    margin:30px;
+    margin-top:40px;
+    font-family: openSansLight;
+    color:#7d7f81;
+    font-size: 18px;
+}
+.content-wrapper{
+    margin-left: 30px;
+    margin-right: 30px;
+}
+.card{
+    background-color: #fff;
+    border-radius: 5px;
+}
+.card-header{
+    padding: 1px 0px 1px 20px;
+    color:#6d7072;
+    font-family: openSansSemiBold;
+    font-size: 15px;;
+    border-bottom: 1px solid #d4d4d46b;
+}
+.card-content{
+    padding: 10px 10px 15px 20px;
+}
+.overall-score{
+    color: #293844;
+    font-family: openSansSemiBold;
+    font-size: 30px;
+    margin-left:10px;   
+}
+.overall-sentiment{
+    font-family: openSans;
+    margin-top:-5px;
+    margin-left:30px;
+    color:#3498db;
+    font-weight: bold;
+}
+.out-of-text{
+    margin-left:33px;
+    font-size: 15px;;
+    margin-top:-25px;
+    color:#293844;
+}
+.small-title{
+    color:#6a6d6f;
+    font-family: openSansSemiBold;
+    font-size: 14px;
+}
+.small-bold{
+    color:#6e7172;
+    font-family: openSansBold;
+    margin-left:30px;
+    margin-top:10px;
+}
+.legend-text{
+    font-size: 10px;
+    color:#223646
+}
+.color-box{
+    margin-right:5px;
+    width: 50px;
+    height: 50px;
+}
