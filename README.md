@@ -74,8 +74,3 @@ yarn start
 ## Contributors
 [Gowshik Prabhu](https://github.com/GowshikPrabhu) | [Shri Saran Raj](https://github.com/saranrajshri)
 
-## Contact
-[Gowshik Prabu H]() - gowhsikprabhu@gmail.com
-
-[Shri Saran Raj N]() - shrisaranraj2001@gmail.com
- 
